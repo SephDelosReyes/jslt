@@ -1,6 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'com.intershop.gradle.javacc' version '4.0.1'
+    id 'com.gradleup.shadow' version '9.6.1'
+    id 'com.intershop.gradle.javacc' version '6.1.0'
     id 'java'
     id 'com.jfrog.artifactory'
     id 'maven-publish'
@@ -23,7 +23,10 @@ dependencies {
 
 ext {
     timestamp = new Date().format('yyyyMMddHHmm')
-    gitrev = "git log -1 HEAD --pretty=tformat:%h".execute().text.trim()
+    // Configuration Cache-safe Git resolution
+    gitrev = providers.exec {
+        commandLine 'git', 'log', '-1', 'HEAD', '--pretty=tformat:%h'
+    }.standardOutput.asText.map { it.trim() }.get()
 }
 
 group 'com.schibsted.spt.data'
@@ -39,12 +42,12 @@ check {
 // ===========================================================================
 // javacc integration
 javacc {
-    javaCCVersion = '7.0.10'
+    javaCCVersion = '7.0.13'
     configs {
         jsltParser {
             inputFile = file('src/main/jjtree/jslt.jjt')
             packageName = 'com/schibsted/spt/data/jslt/parser'
-            jdkVersion = targetCompatibility
+            jdkVersion = java.targetCompatibility.toString()
             jjtree {
                 staticParam = false;
                 trackTokens = true;
@@ -57,12 +60,11 @@ javacc {
     }
 }
 
-
 // ===========================================================================
 // Sonatype Maven central publishing
 
-task sourceJar(type: Jar) {
-    classifier "sources"
+tasks.register("sourceJar", Jar) {
+    archiveClassifier.set("sources")
     from sourceSets.main.allJava
 }
 
@@ -80,9 +82,10 @@ javadoc {
     source = sourceSets.javadoc.allJava
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier "javadoc"
+tasks.register("javadocJar", Jar) {
+    archiveClassifier.set("javadoc")
     from javadoc.destinationDir
+    dependsOn(javadoc)
 }
 
 artifacts {
@@ -93,10 +96,10 @@ artifacts {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            groupId group
-            artifactId 'jslt'
-            version version
+        create('mavenJava', MavenPublication) {
+            groupId = group
+            artifactId = 'jslt'
+            version = project.provider { version.toString() }.get()
 
             pom {
                 name = 'JSLT'
@@ -131,10 +134,10 @@ publishing {
 
             from components.java
 
-            artifact(sourceJar) {
+            artifact(tasks.named('sourceJar')) {
                 classifier = 'sources'
             }
-            artifact(javadocJar) {
+            artifact(tasks.named('javadocJar')) {
                 classifier = 'javadoc'
             }
         }
@@ -145,8 +148,8 @@ publishing {
             credentials {
                 // these are stored in a secret gradle.properties that is not
                 // in the repo, so we need a fallback
-                username((project.hasProperty('sonatypeUsername')) ? sonatypeUsername : "no username")
-                password((project.hasProperty('sonatypePassword')) ? sonatypePassword : "no password")
+                username = project.providers.gradleProperty('sonatypeUsername').getOrElse('no username')
+                password = project.providers.gradleProperty('sonatypePassword').getOrElse('no password')
             }
         }
     }

@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.28.0"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:6.0.4"
     }
 }
 
@@ -16,5 +16,9 @@ apply plugin: 'signing'
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
-sourceCompatibility = 11
-targetCompatibility = 11
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
