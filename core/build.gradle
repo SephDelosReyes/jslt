@@ -1,12 +1,13 @@
 plugins {
-    id 'com.gradleup.shadow' version '9.6.1'
-    id 'com.intershop.gradle.javacc' version '6.1.0'
+    alias libs.plugins.gradleup.shadow
+    alias libs.plugins.intershop.gradle.javacc
     id 'java'
     id 'com.jfrog.artifactory'
     id 'maven-publish'
     id 'signing'
 }
-// apply plugin: 'jacoco' (fails in JDK 11 on Travis)
+
+apply plugin: 'jacoco'
 
 
 repositories {
@@ -15,10 +16,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
+    implementation platform(libs.jackson.bom)
+    implementation libs.jackson.databind
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
+    testImplementation libs.junit
+    testImplementation libs.jackson.dataformat.yaml
 }
 
 ext {

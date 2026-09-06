@@ -12,7 +12,6 @@ apply plugin: 'java'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-// apply plugin: 'jacoco' (fails in JDK 11 on Travis)
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
