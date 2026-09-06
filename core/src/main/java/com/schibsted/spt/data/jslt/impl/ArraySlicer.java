@@ -17,11 +17,11 @@ package com.schibsted.spt.data.jslt.impl;
 
 import java.util.List;
 import java.util.ArrayList;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.StringNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ArrayNode;
 import com.schibsted.spt.data.jslt.JsltException;
 
 /**
@@ -49,7 +49,7 @@ public class ArraySlicer extends AbstractNode {
 
     int size = sequence.size();
     if (sequence.isTextual())
-      size = sequence.asText().length();
+      size = sequence.asString().length();
 
     int leftix = resolveIndex(scope, left, input, size, 0);
     if (!colon) {
@@ -59,10 +59,10 @@ public class ArraySlicer extends AbstractNode {
           val = NullNode.instance;
         return val;
       } else {
-        String string = sequence.asText();
+        String string = sequence.asString();
         if (leftix >= string.length())
           throw new JsltException("String index out of range: " + leftix, location);
-        return new TextNode("" + string.charAt(leftix));
+        return new StringNode("" + string.charAt(leftix));
       }
     }
 
@@ -76,8 +76,8 @@ public class ArraySlicer extends AbstractNode {
         result.add(sequence.get(ix));
       return result;
     } else {
-      String string = sequence.asText();
-      return new TextNode(string.substring(leftix, rightix));
+      String string = sequence.asString();
+      return new StringNode(string.substring(leftix, rightix));
     }
   }
 

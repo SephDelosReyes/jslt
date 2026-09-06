@@ -15,7 +15,7 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.JsltException;
 
 public abstract class ComparisonOperator extends AbstractOperator {
@@ -38,8 +38,8 @@ public abstract class ComparisonOperator extends AbstractOperator {
       return n1 - n2;
 
     } else if (v1.isTextual() && v2.isTextual()) {
-      String s1 = v1.asText();
-      String s2 = v2.asText();
+      String s1 = v1.asString();
+      String s2 = v2.asString();
       return (double) s1.compareTo(s2);
 
     } else if (v1.isNull() || v2.isNull()) {

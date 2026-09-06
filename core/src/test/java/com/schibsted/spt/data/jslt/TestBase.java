@@ -14,8 +14,9 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Utilities for test cases.
@@ -28,7 +29,7 @@ public class TestBase {
       Map<String, JsonNode> map = new HashMap();
       map.put(var, mapper.readTree(val));
       return map;
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }
@@ -59,7 +60,7 @@ public class TestBase {
       JsonNode expected = mapper.readTree(result);
 
       assertEquals("actual class " + actual.getClass() + ", expected class " + expected.getClass(), expected, actual);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }
@@ -89,7 +90,7 @@ public class TestBase {
       JsonNode context = mapper.readTree(input);
       Expression expr = Parser.compileString(query);
       return expr.apply(context);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }
@@ -110,7 +111,7 @@ public class TestBase {
     } catch (JsltException e) {
       assertTrue("incorrect error message: '" + e.getMessage() + "'",
                  e.getMessage().indexOf(result) != -1);
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }

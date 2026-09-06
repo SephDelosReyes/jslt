@@ -13,8 +13,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.schibsted.spt.data.jslt.Parser;
 import com.schibsted.spt.data.jslt.Expression;
 
@@ -48,8 +48,8 @@ public class PlaygroundServer {
       if (request.getMethod().equals("POST")) {
         try {
           JsonNode body = mapper.readTree(request.getReader());
-          JsonNode input = mapper.readTree(body.get("json").asText());
-          String jslt = body.get("jslt").asText();
+          JsonNode input = mapper.readTree(body.get("json").asString());
+          String jslt = body.get("jslt").asString();
 
           Expression template = Parser.compileString(jslt);
           JsonNode output = template.apply(input);

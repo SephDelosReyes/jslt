@@ -17,8 +17,8 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
 
 /**
  * Test cases verifying queries against an input.
@@ -84,9 +84,9 @@ public class QueryTest extends TestBase {
         continue;
 
       strings.add(new Object[] {
-          test.get("input").asText(),
-          test.get("query").asText(),
-          test.get("output").asText(),
+          TestUtils.toJsonString(test.get("input")),
+          TestUtils.toJsonString(test.get("query")),
+          TestUtils.toJsonString(test.get("output")),
           toMap(test.get("variables"))
         });
     }
@@ -96,7 +96,7 @@ public class QueryTest extends TestBase {
   private static Map<String, JsonNode> toMap(JsonNode json) {
     Map<String, JsonNode> variables = new HashMap();
     if (json != null) {
-      Iterator<String> it = json.fieldNames();
+      Iterator<String> it = json.propertyNames().iterator();
       while (it.hasNext()) {
         String field = it.next();
         variables.put(field, json.get(field));

@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 
 public class TestUtils {
   private static ObjectMapper jsonMapper = new ObjectMapper();
@@ -29,6 +31,17 @@ public class TestUtils {
         throw new JsltException("Unknown format: " + resource);
     } catch (IOException e) {
       throw new JsltException("Couldn't read resource " + resource, e);
+    }
+  }
+
+  public static String toJsonString(JsonNode node) {
+    try {
+      if (node.isString()) {
+        return node.asString();
+      }
+      return jsonMapper.writeValueAsString(node);
+    } catch (JacksonException e) {
+      throw new JsltException("Couldn't convert node to JSON string", e);
     }
   }
 }

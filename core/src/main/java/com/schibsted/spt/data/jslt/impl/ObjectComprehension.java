@@ -22,11 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.StringNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.schibsted.spt.data.jslt.JsltException;
 import com.schibsted.spt.data.jslt.filters.JsonFilter;
 
@@ -78,7 +78,7 @@ public class ObjectComprehension extends AbstractNode {
           JsonNode keyNode = key.apply(scope, context);
           if (!keyNode.isTextual())
             throw new JsltException("Object comprehension must have string as key, not " + keyNode, location);
-          object.set(keyNode.asText(), valueNode);
+          object.set(keyNode.asString(), valueNode);
         }
       }
     }

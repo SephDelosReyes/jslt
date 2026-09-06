@@ -1,14 +1,14 @@
 [versions]
-jackson = '2.13.4'
+jackson = '3.1.6'
 javacc = '6.1.0'
 jetty = '9.4.57.v20241219'
 junit = '4.13.2'
 shadow = '9.6.1'
 
 [libraries]
-jackson-bom = { group = "com.fasterxml.jackson", name = "jackson-bom", version.ref = "jackson" }
-jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind" }
-jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml" }
+jackson-bom = { group = "tools.jackson", name = "jackson-bom", version.ref = "jackson" }
+jackson-databind = { group = "tools.jackson.core", name = "jackson-databind" }
+jackson-dataformat-yaml = { group = "tools.jackson.dataformat", name = "jackson-dataformat-yaml" }
 jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 

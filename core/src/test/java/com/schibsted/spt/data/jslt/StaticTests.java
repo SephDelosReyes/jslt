@@ -21,14 +21,15 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import java.math.BigInteger;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.FloatNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.StringNode;
+import tools.jackson.databind.node.FloatNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BigIntegerNode;
 
 import com.schibsted.spt.data.jslt.Module;
 import com.schibsted.spt.data.jslt.impl.ModuleImpl;
@@ -58,7 +59,7 @@ public class StaticTests extends TestBase {
     Expression expr = Parser.compileString("{\"a\":1, \"b\":2}");
     JsonNode actual = expr.apply(null);
 
-    Iterator<String> it = actual.fieldNames();
+    Iterator<String> it = actual.propertyNames().iterator();
     assertEquals("a", it.next());
     assertEquals("b", it.next());
   }
@@ -76,7 +77,7 @@ public class StaticTests extends TestBase {
         double value = actual.doubleValue();
         assertTrue(value > 0.0 && value < 1.0);
       }
-    } catch (IOException e) {
+    } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }
@@ -152,7 +153,7 @@ public class StaticTests extends TestBase {
 
     for (int ix = 0; ix < 10000000; ix++) {
       String r = generateRegexp();
-      JsonNode regexp = new TextNode(r);
+      JsonNode regexp = new StringNode(r);
       expr.apply(regexp);
     }
   }
@@ -218,7 +219,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testJsltObjectFilter() throws IOException {
+  public void testJsltObjectFilter() {
     // filter to accept everything that isn't null
     String filter = " . != null ";
 
@@ -238,7 +239,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testJsltObjectFilter2() throws IOException {
+  public void testJsltObjectFilter2() {
     // filter to accept everything that isn't the empty string
     String filter = " . != \"\" ";
 
@@ -258,7 +259,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testJsltObjectFilter3() throws IOException {
+  public void testJsltObjectFilter3() {
     // filter to accept everything that isn't the empty string
     String filter = " . != \"\" ";
 
@@ -282,7 +283,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testTrueObjectFilter() throws IOException {
+  public void testTrueObjectFilter() {
     StringReader jslt = new StringReader(
       "{for (.) .key : .value }"
     );
@@ -307,7 +308,7 @@ public class StaticTests extends TestBase {
     Expression expr = Parser.compileString("{\"a\":1, \"b\":2,}");
     JsonNode actual = expr.apply(null);
 
-    Iterator<String> it = actual.fieldNames();
+    Iterator<String> it = actual.propertyNames().iterator();
     assertEquals("a", it.next());
     assertEquals("b", it.next());
   }
@@ -331,11 +332,11 @@ public class StaticTests extends TestBase {
       .compile();
 
     JsonNode result = expr.apply(NullNode.instance);
-    assertEquals("Hei på deg", result.asText());
+    assertEquals("Hei på deg", result.asString());
   }
 
   @Test
-  public void testPipeOperatorAndObjectMatcher()  throws IOException {
+  public void testPipeOperatorAndObjectMatcher() {
     Expression expr = Parser.compileString("{\"bar\": \"baz\",\"foo\":{ \"a\": \"b\" } | {\"type\" : \"Anonymized-View\",* : .}}");
 
 
@@ -348,7 +349,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testTestFunctionCompileFail()  throws IOException {
+  public void testTestFunctionCompileFail() {
     // we want to verify that this function fails at compile-time
     // not at runtime
     try {
@@ -360,7 +361,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testCaptureFunctionCompileFail()  throws IOException {
+  public void testCaptureFunctionCompileFail() {
     // we want to verify that this function fails at compile-time
     // not at runtime
     try {
@@ -372,7 +373,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testSplitFunctionCompileFail()  throws IOException {
+  public void testSplitFunctionCompileFail() {
     // we want to verify that this function fails at compile-time
     // not at runtime
     try {
@@ -384,7 +385,7 @@ public class StaticTests extends TestBase {
   }
 
   @Test
-  public void testReplaceFunctionCompileFail()  throws IOException {
+  public void testReplaceFunctionCompileFail() {
     // we want to verify that this function fails at compile-time
     // not at runtime
     try {

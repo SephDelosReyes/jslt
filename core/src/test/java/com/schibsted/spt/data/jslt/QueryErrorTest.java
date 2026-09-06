@@ -17,9 +17,9 @@ import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NullNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.NullNode;
 
 /**
  * Checks that JSLT queries produce certain runtime errors.
@@ -77,9 +77,9 @@ public class QueryErrorTest extends TestBase {
         continue;
 
       strings.add(new Object[] {
-          test.get("input").asText(),
-          test.get("query").asText(),
-          test.get("error").asText()
+          TestUtils.toJsonString(test.get("input")),
+          TestUtils.toJsonString(test.get("query")),
+          TestUtils.toJsonString(test.get("error"))
         });
     }
     return strings;

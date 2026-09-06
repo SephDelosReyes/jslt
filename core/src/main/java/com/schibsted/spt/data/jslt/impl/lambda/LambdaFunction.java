@@ -15,7 +15,7 @@
 
 package com.schibsted.spt.data.jslt.impl.lambda;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.Parser;
 import com.schibsted.spt.data.jslt.Expression;
 import com.schibsted.spt.data.jslt.impl.NodeUtils;
@@ -36,8 +36,8 @@ public class LambdaFunction {
       JsonNode input = NodeUtils.mapper.readTree(json);
 
       // now we can do the thing
-      JsonNode source = NodeUtils.mapper.readTree(input.get("json").asText());
-      String jslt = input.get("jstl").asText();
+      JsonNode source = NodeUtils.mapper.readTree(input.get("json").asString());
+      String jslt = input.get("jstl").asString();
 
       Expression template = Parser.compileString(jslt);
       JsonNode output = template.apply(source);

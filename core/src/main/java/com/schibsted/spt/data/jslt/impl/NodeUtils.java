@@ -20,17 +20,17 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Collections;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.DoubleNode;
+import tools.jackson.databind.node.StringNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.BigIntegerNode;
 import com.schibsted.spt.data.jslt.JsltException;
 
 public class NodeUtils {
@@ -50,7 +50,7 @@ public class NodeUtils {
   public static boolean isTrue(JsonNode value) {
     return value != BooleanNode.FALSE &&
       !(value.isObject() && value.size() == 0) &&
-      !(value.isTextual() && value.asText().length() == 0) &&
+      !(value.isTextual() && value.asString().length() == 0) &&
       !(value.isArray() && value.size() == 0) &&
       !(value.isNumber() && value.doubleValue() == 0.0) &&
       !value.isNull();
@@ -84,7 +84,7 @@ public class NodeUtils {
   public static String toString(JsonNode value, boolean nullok) {
     // check what type this is
     if (value.isTextual())
-      return value.asText();
+      return value.asString();
     else if (value.isNull() && nullok)
       return null;
 
@@ -132,7 +132,7 @@ public class NodeUtils {
     }
 
     // let's look at this number
-    String number = value.asText();
+    String number = value.asString();
     JsonNode numberNode = parseNumber(number);
     if (numberNode == null || !numberNode.isNumber()) {
       if (fallback == null)
@@ -234,11 +234,11 @@ public class NodeUtils {
 
   public static ArrayNode convertObjectToArray(JsonNode object) {
     ArrayNode array = mapper.createArrayNode();
-    Iterator<Map.Entry<String, JsonNode>> it = object.fields();
+    Iterator<Map.Entry<String, JsonNode>> it = object.properties().iterator();
     while (it.hasNext()) {
       Map.Entry<String, JsonNode> item = it.next();
       ObjectNode element = NodeUtils.mapper.createObjectNode();
-      element.set("key", new TextNode(item.getKey()));
+      element.set("key", new StringNode(item.getKey()));
       element.set("value", item.getValue());
       array.add(element);
     }
