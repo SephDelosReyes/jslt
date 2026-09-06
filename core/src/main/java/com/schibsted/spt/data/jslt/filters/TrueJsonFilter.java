@@ -1,4 +1,3 @@
-
 // Copyright 2019 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +14,12 @@
 
 package com.schibsted.spt.data.jslt.filters;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.schibsted.spt.data.jslt.impl.NodeUtils;
+import tools.jackson.databind.JsonNode;
 
-/**
- * Accepts all JSON values.
- */
+/** Accepts all JSON values. */
 public class TrueJsonFilter implements JsonFilter {
 
-  /**
-   * Accept this value.
-   */
+  /** Accept this value. */
   public boolean filter(JsonNode value) {
     return true;
   }

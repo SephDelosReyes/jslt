@@ -1,4 +1,3 @@
-
 // Copyright 2019 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +14,14 @@
 
 package com.schibsted.spt.data.jslt.filters;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 /**
- * A filter that can approve/disapprove a JSON value. Used to
- * configure which key/value pairs are kept in JSON objects.
+ * A filter that can approve/disapprove a JSON value. Used to configure which key/value pairs are
+ * kept in JSON objects.
  */
 public interface JsonFilter {
 
-  /**
-   * Whether or not to accept this value.
-   */
+  /** Whether or not to accept this value. */
   public boolean filter(JsonNode value);
-
 }

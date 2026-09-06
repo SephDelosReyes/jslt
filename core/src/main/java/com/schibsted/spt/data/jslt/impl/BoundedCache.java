@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +14,12 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * A Map implementation that deletes the oldest entry once the size
- * goes over a preset limit. This prevents the Map from growing
- * without bounds.
+ * A Map implementation that deletes the oldest entry once the size goes over a preset limit. This
+ * prevents the Map from growing without bounds.
  */
 public class BoundedCache<K, V> extends LinkedHashMap<K, V> {
   private int maxSize;

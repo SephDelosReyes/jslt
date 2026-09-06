@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +14,13 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.StringNode;
 
 public class MultiplyOperator extends NumericOperator {
 
-  public MultiplyOperator(ExpressionNode left, ExpressionNode right,
-                          Location location) {
+  public MultiplyOperator(ExpressionNode left, ExpressionNode right, Location location) {
     super(left, right, "*", location);
   }
 
@@ -36,19 +31,17 @@ public class MultiplyOperator extends NumericOperator {
       String str;
       int num;
       if (v1.isTextual() && !v2.isTextual()) {
-        str = v1.asText();
+        str = v1.asString();
         num = v2.intValue();
       } else if (v2.isTextual()) {
-        str = v2.asText();
+        str = v2.asString();
         num = v1.intValue();
-      } else
-        throw new JsltException("Can't multiply two strings!");
+      } else throw new JsltException("Can't multiply two strings!");
 
       StringBuilder buf = new StringBuilder();
-      for ( ; num > 0; num--)
-        buf.append(str);
+      for (; num > 0; num--) buf.append(str);
 
-      return new TextNode(buf.toString());
+      return new StringNode(buf.toString());
     } else
       // do numeric operation
       return super.perform(v1, v2);

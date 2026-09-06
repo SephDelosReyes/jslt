@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +16,7 @@ package com.schibsted.spt.data.jslt.impl;
 
 public class Utils {
 
-  /**
-   * Return a lower-case hex representation of the binary data.
-   */
+  /** Return a lower-case hex representation of the binary data. */
   public static String printHexBinary(byte[] data) {
     char[] buf = new char[data.length * 2];
     for (int ix = 0; ix < data.length; ix++) {
@@ -30,9 +27,7 @@ public class Utils {
   }
 
   private static char getHexDigit(int number) {
-    if (number < 10)
-      return (char) ('0' + number);
-    else
-      return (char) ('a' + (number - 10));
+    if (number < 10) return (char) ('0' + number);
+    else return (char) ('a' + (number - 10));
   }
 }

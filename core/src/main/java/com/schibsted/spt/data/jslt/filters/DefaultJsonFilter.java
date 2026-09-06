@@ -1,4 +1,3 @@
-
 // Copyright 2019 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +14,14 @@
 
 package com.schibsted.spt.data.jslt.filters;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.impl.NodeUtils;
+import tools.jackson.databind.JsonNode;
 
-/**
- * The filter that JSLT uses by default.
- */
+/** The filter that JSLT uses by default. */
 public class DefaultJsonFilter implements JsonFilter {
 
-  /**
-   * Whether or not to accept this value.
-   */
+  /** Whether or not to accept this value. */
   public boolean filter(JsonNode value) {
     return NodeUtils.isValue(value);
   }
-
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,7 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-/**
- * Represents a position in a JSTL source code file. Used in error
- * messages.
- */
+/** Represents a position in a JSTL source code file. Used in error messages. */
 public class Location {
   private String source; // can be null, if we don't know
   private int line;
@@ -43,9 +39,7 @@ public class Location {
   }
 
   public String toString() {
-    if (source != null)
-      return source + ':' + line + ':' + column;
-    else
-      return "" + line + ':' + column;
+    if (source != null) return source + ':' + line + ':' + column;
+    else return "" + line + ':' + column;
   }
 }

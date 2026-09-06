@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +14,13 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.schibsted.spt.data.jslt.JsltException;
-import com.schibsted.spt.data.jslt.Module;
 import com.schibsted.spt.data.jslt.Callable;
 import com.schibsted.spt.data.jslt.Function;
+import com.schibsted.spt.data.jslt.JsltException;
+import com.schibsted.spt.data.jslt.Module;
+import tools.jackson.databind.JsonNode;
 
-/**
- * Represents a JSLT source code file loaded separately.
- */
+/** Represents a JSLT source code file loaded separately. */
 public class JstlFile implements Module, Function {
   private String prefix;
   private ExpressionImpl body;
@@ -57,8 +54,8 @@ public class JstlFile implements Module, Function {
 
   public JsonNode call(JsonNode input, JsonNode[] arguments) {
     if (!body.hasBody())
-      throw new JsltException("Module '" + prefix + "' has no body, so cannot "+
-                              "be called as a function");
+      throw new JsltException(
+          "Module '" + prefix + "' has no body, so cannot " + "be called as a function");
 
     // make the argument be the input to the template
     return body.apply(arguments[0]);

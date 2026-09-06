@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +16,7 @@ package com.schibsted.spt.data.jslt;
 
 import com.schibsted.spt.data.jslt.impl.Location;
 
-/**
- * Parent exception for all exceptions thrown by JSLT for both
- * compilation and run-time errors.
- */
+/** Parent exception for all exceptions thrown by JSLT for both compilation and run-time errors. */
 public class JsltException extends RuntimeException {
   private Location location;
 
@@ -41,50 +37,32 @@ public class JsltException extends RuntimeException {
     this.location = location;
   }
 
-  /**
-   * Returns the error message with location information.
-   */
+  /** Returns the error message with location information. */
   public String getMessage() {
-    if (location != null)
-      return super.getMessage() + " at " + location;
-    else
-      return super.getMessage();
+    if (location != null) return super.getMessage() + " at " + location;
+    else return super.getMessage();
   }
 
-  /**
-   * Returns the error message without location information.
-   */
+  /** Returns the error message without location information. */
   public String getMessageWithoutLocation() {
     return super.getMessage();
   }
 
-  /**
-   * What file/resource did the error occur in? Can be null.
-   */
+  /** What file/resource did the error occur in? Can be null. */
   public String getSource() {
-    if (location == null)
-      return null;
-    else
-      return location.getSource();
+    if (location == null) return null;
+    else return location.getSource();
   }
 
-  /**
-   * What line did the error occur on? -1 if unknown.
-   */
+  /** What line did the error occur on? -1 if unknown. */
   public int getLine() {
-    if (location == null)
-      return -1;
-    else
-      return location.getLine();
+    if (location == null) return -1;
+    else return location.getLine();
   }
 
-  /**
-   * What column did the error occur on? -1 if unknown.
-   */
+  /** What column did the error occur on? -1 if unknown. */
   public int getColumn() {
-    if (location == null)
-      return -1;
-    else
-      return location.getColumn();
+    if (location == null) return -1;
+    else return location.getColumn();
   }
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +14,11 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
-import java.util.HashMap;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.Function;
 import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
 
-public class FunctionDeclaration extends AbstractNode
-  implements Function, ExpressionNode {
+public class FunctionDeclaration extends AbstractNode implements Function, ExpressionNode {
 
   private String name;
   private String[] parameters;
@@ -31,8 +27,8 @@ public class FunctionDeclaration extends AbstractNode
   private ExpressionNode body;
   private int stackFrameSize;
 
-  public FunctionDeclaration(String name, String[] parameters,
-                             LetExpression[] lets, ExpressionNode body) {
+  public FunctionDeclaration(
+      String name, String[] parameters, LetExpression[] lets, ExpressionNode body) {
     super(null);
     this.name = name;
     this.parameters = parameters;
@@ -66,8 +62,7 @@ public class FunctionDeclaration extends AbstractNode
     scope.enterFunction(stackFrameSize);
 
     // bind the arguments into the function scope
-    for (int ix = 0; ix < arguments.length; ix++)
-      scope.setValue(parameterSlots[ix], arguments[ix]);
+    for (int ix = 0; ix < arguments.length; ix++) scope.setValue(parameterSlots[ix], arguments[ix]);
 
     // then bind the lets
     NodeUtils.evalLets(scope, input, lets);
@@ -79,8 +74,7 @@ public class FunctionDeclaration extends AbstractNode
   }
 
   public ExpressionNode optimize() {
-    for (int ix = 0; ix < lets.length; ix++)
-      lets[ix].optimize();
+    for (int ix = 0; ix < lets.length; ix++) lets[ix].optimize();
 
     body = body.optimize();
     return this;
@@ -95,8 +89,7 @@ public class FunctionDeclaration extends AbstractNode
   public void computeMatchContexts(DotExpression parent) {
     // not allowed to use object matcher inside declared functions
     FailDotExpression fail = new FailDotExpression(null, "function declaration");
-    for (int ix = 0; ix < lets.length; ix++)
-      lets[ix].computeMatchContexts(fail);
+    for (int ix = 0; ix < lets.length; ix++) lets[ix].computeMatchContexts(fail);
     body.computeMatchContexts(fail);
   }
 

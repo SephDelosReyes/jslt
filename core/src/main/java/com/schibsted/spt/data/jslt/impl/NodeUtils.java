@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,30 +14,27 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.math.BigInteger;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Collections;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.schibsted.spt.data.jslt.JsltException;
+import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Map;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BigIntegerNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.DoubleNode;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 public class NodeUtils {
   public static final ObjectMapper mapper = new ObjectMapper();
 
   public static void evalLets(Scope scope, JsonNode input, LetExpression[] lets) {
-    if (lets == null)
-      return;
+    if (lets == null) return;
 
     for (int ix = 0; ix < lets.length; ix++) {
       String var = lets[ix].getVariable();
@@ -48,25 +44,23 @@ public class NodeUtils {
   }
 
   public static boolean isTrue(JsonNode value) {
-    return value != BooleanNode.FALSE &&
-      !(value.isObject() && value.size() == 0) &&
-      !(value.isTextual() && value.asText().length() == 0) &&
-      !(value.isArray() && value.size() == 0) &&
-      !(value.isNumber() && value.doubleValue() == 0.0) &&
-      !value.isNull();
+    return value != BooleanNode.FALSE
+        && !(value.isObject() && value.size() == 0)
+        && !(value.isTextual() && value.asString().length() == 0)
+        && !(value.isArray() && value.size() == 0)
+        && !(value.isNumber() && value.doubleValue() == 0.0)
+        && !value.isNull();
   }
 
   public static boolean isValue(JsonNode value) {
-    return !value.isNull() &&
-      !(value.isObject() && value.size() == 0) &&
-      !(value.isArray() && value.size() == 0);
+    return !value.isNull()
+        && !(value.isObject() && value.size() == 0)
+        && !(value.isArray() && value.size() == 0);
   }
 
   public static JsonNode toJson(boolean value) {
-    if (value)
-      return BooleanNode.TRUE;
-    else
-      return BooleanNode.FALSE;
+    if (value) return BooleanNode.TRUE;
+    else return BooleanNode.FALSE;
   }
 
   public static JsonNode toJson(double value) {
@@ -75,18 +69,15 @@ public class NodeUtils {
 
   public static JsonNode toJson(String[] array) {
     ArrayNode node = NodeUtils.mapper.createArrayNode();
-    for (int ix = 0; ix < array.length; ix++)
-      node.add(array[ix]);
+    for (int ix = 0; ix < array.length; ix++) node.add(array[ix]);
     return node;
   }
 
   // nullok => return Java null for Json null
   public static String toString(JsonNode value, boolean nullok) {
     // check what type this is
-    if (value.isTextual())
-      return value.asText();
-    else if (value.isNull() && nullok)
-      return null;
+    if (value.isTextual()) return value.asString();
+    else if (value.isNull() && nullok) return null;
 
     // not sure how well this works in practice, but let's try
     return value.toString();
@@ -94,10 +85,8 @@ public class NodeUtils {
 
   public static ArrayNode toArray(JsonNode value, boolean nullok) {
     // check what type this is
-    if (value.isArray())
-      return (ArrayNode) value;
-    else if (value.isNull() && nullok)
-      return null;
+    if (value.isArray()) return (ArrayNode) value;
+    else if (value.isNull() && nullok) return null;
 
     throw new JsltException("Cannot convert " + value + " to array");
   }
@@ -112,43 +101,33 @@ public class NodeUtils {
     return number(value, strict, loc, null);
   }
 
-  public static JsonNode number(JsonNode value, boolean strict, Location loc,
-                                JsonNode fallback) {
+  public static JsonNode number(JsonNode value, boolean strict, Location loc, JsonNode fallback) {
     // check what type this is
-    if (value.isNumber())
-      return value;
+    if (value.isNumber()) return value;
     else if (value.isNull()) {
-      if (fallback == null)
-        return value;
-      else
-        return fallback;
+      if (fallback == null) return value;
+      else return fallback;
     } else if (!value.isTextual()) {
-      if (strict)
-        throw new JsltException("Can't convert " + value + " to number", loc);
-      else if (fallback == null)
-        return NullNode.instance;
-      else
-        return fallback;
+      if (strict) throw new JsltException("Can't convert " + value + " to number", loc);
+      else if (fallback == null) return NullNode.instance;
+      else return fallback;
     }
 
     // let's look at this number
-    String number = value.asText();
+    String number = value.asString();
     JsonNode numberNode = parseNumber(number);
     if (numberNode == null || !numberNode.isNumber()) {
       if (fallback == null)
-        throw new JsltException("number(" + number + ") failed: not a number",
-                                loc);
-      else
-        return fallback;
+        throw new JsltException("number(" + number + ") failed: not a number", loc);
+      else return fallback;
     } else {
-        return numberNode;
+      return numberNode;
     }
   }
 
   // returns null in case of failure (caller then handles fallback)
   private static JsonNode parseNumber(String number) {
-    if (number.length() == 0)
-      return null;
+    if (number.length() == 0) return null;
 
     int sign = 1;
     int pos = 0;
@@ -160,21 +139,16 @@ public class NodeUtils {
 
     int endInteger = scanDigits(number, pos);
     if (endInteger == number.length()) {
-      if (number.length() < 10)
-        return new IntNode(Integer.parseInt(number));
-      else if (number.length() < 19)
-        return new LongNode(Long.parseLong(number));
-      else
-        return new BigIntegerNode(new BigInteger(number));
+      if (number.length() < 10) return new IntNode(Integer.parseInt(number));
+      else if (number.length() < 19) return new LongNode(Long.parseLong(number));
+      else return new BigIntegerNode(new BigInteger(number));
     }
 
     // since there's stuff after the initial integer it must be either
     // the decimal part or the exponent
     long intPart;
-    if (endInteger == pos)
-      intPart = 0; // this means there was no zero before the period
-    else
-      intPart = Long.parseLong(number.substring(intStart, endInteger));
+    if (endInteger == pos) intPart = 0; // this means there was no zero before the period
+    else intPart = Long.parseLong(number.substring(intStart, endInteger));
 
     pos = endInteger;
     double value = intPart * sign;
@@ -182,8 +156,7 @@ public class NodeUtils {
     if (number.charAt(pos) == '.') {
       pos += 1;
       int endDecimal = scanDigits(number, pos);
-      if (endDecimal == pos)
-        return null;
+      if (endDecimal == pos) return null;
 
       long decimalPart = Long.parseLong(number.substring(endInteger + 1, endDecimal));
       int digits = endDecimal - endInteger - 1;
@@ -192,39 +165,33 @@ public class NodeUtils {
       pos = endDecimal;
 
       // if there's nothing more, then this is it
-      if (pos == number.length())
-        return new DoubleNode(value);
+      if (pos == number.length()) return new DoubleNode(value);
     }
 
     // there is more: next character MUST be 'e' or 'E'
     char ch = number.charAt(pos);
-    if (ch != 'e' && ch != 'E')
-      return null;
+    if (ch != 'e' && ch != 'E') return null;
 
     // now we must have either '-', '+', or an integer
     pos++;
-    if (pos == number.length())
-      return null;
+    if (pos == number.length()) return null;
     ch = number.charAt(pos);
     int signExp = 1;
-    if (ch == '+')
-      pos++;
+    if (ch == '+') pos++;
     else if (ch == '-') {
       signExp = -1;
       pos++;
     }
 
     int endExponent = scanDigits(number, pos);
-    if (endExponent != number.length() || endExponent == pos)
-      return null;
+    if (endExponent != number.length() || endExponent == pos) return null;
 
     int exponent = Integer.parseInt(number.substring(pos)) * signExp;
     return new DoubleNode(value * Math.pow(10, exponent));
   }
 
   private static int scanDigits(String number, int pos) {
-    while (pos < number.length() && isDigit(number.charAt(pos)))
-      pos++;
+    while (pos < number.length() && isDigit(number.charAt(pos))) pos++;
     return pos;
   }
 
@@ -234,11 +201,11 @@ public class NodeUtils {
 
   public static ArrayNode convertObjectToArray(JsonNode object) {
     ArrayNode array = mapper.createArrayNode();
-    Iterator<Map.Entry<String, JsonNode>> it = object.fields();
+    Iterator<Map.Entry<String, JsonNode>> it = object.properties().iterator();
     while (it.hasNext()) {
       Map.Entry<String, JsonNode> item = it.next();
       ObjectNode element = NodeUtils.mapper.createObjectNode();
-      element.set("key", new TextNode(item.getKey()));
+      element.set("key", new StringNode(item.getKey()));
       element.set("value", item.getValue());
       array.add(element);
     }
@@ -247,8 +214,7 @@ public class NodeUtils {
 
   public static String indent(int level) {
     char[] indent = new char[level * 2];
-    for (int ix = 0; ix < indent.length; ix++)
-      indent[ix] = ' ';
+    for (int ix = 0; ix < indent.length; ix++) indent[ix] = ' ';
     return new String(indent, 0, indent.length);
   }
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,8 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
 
 public class VariableExpression extends AbstractNode {
   private String variable;
@@ -35,9 +34,7 @@ public class VariableExpression extends AbstractNode {
 
   public JsonNode apply(Scope scope, JsonNode input) {
     JsonNode value = scope.getValue(slot);
-    if (value == null)
-      throw new JsltException("No such variable '" + variable + "'",
-                              location);
+    if (value == null) throw new JsltException("No such variable '" + variable + "'", location);
     return value;
   }
 
@@ -57,10 +54,8 @@ public class VariableExpression extends AbstractNode {
     // in the expression tree and be done with it.
     ExpressionNode declaration = info.getDeclaration();
     // will be null if the variable is a parameter
-    if (declaration != null && (declaration instanceof LiteralExpression))
-      return declaration;
-    else
-      return this;
+    if (declaration != null && (declaration instanceof LiteralExpression)) return declaration;
+    else return this;
   }
 
   public String toString() {

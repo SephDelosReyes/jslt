@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,25 +14,19 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.DoubleNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.NullNode;
 
 public class DivideOperator extends NumericOperator {
 
-  public DivideOperator(ExpressionNode left, ExpressionNode right,
-                        Location location) {
+  public DivideOperator(ExpressionNode left, ExpressionNode right, Location location) {
     super(left, right, "/", location);
   }
 
   public JsonNode perform(JsonNode v1, JsonNode v2) {
-    if (v1.isNull() || v2.isNull())
-      return NullNode.instance;
+    if (v1.isNull() || v2.isNull()) return NullNode.instance;
 
     // we only support the numeric operation and nothing else
     v1 = NodeUtils.number(v1, true, location);
@@ -42,12 +35,9 @@ public class DivideOperator extends NumericOperator {
     if (v1.isIntegralNumber() && v2.isIntegralNumber()) {
       long l1 = v1.longValue();
       long l2 = v2.longValue();
-      if (l1 % l2 == 0)
-        return new LongNode(l1 / l2);
-      else
-        return new DoubleNode((double) l1 / (double) l2);
-    } else
-      return new DoubleNode(perform(v1.doubleValue(), v2.doubleValue()));
+      if (l1 % l2 == 0) return new LongNode(l1 / l2);
+      else return new DoubleNode((double) l1 / (double) l2);
+    } else return new DoubleNode(perform(v1.doubleValue(), v2.doubleValue()));
   }
 
   protected double perform(double v1, double v2) {

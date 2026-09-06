@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,20 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
-import java.util.HashMap;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.schibsted.spt.data.jslt.Module;
 import com.schibsted.spt.data.jslt.Callable;
 import com.schibsted.spt.data.jslt.JsltException;
+import com.schibsted.spt.data.jslt.Module;
+import java.util.HashMap;
+import java.util.Map;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /**
- * A module containing functions and macros that *may* be officially
- * added to JSLT in the future. For now, they're made available here
- * so that people can use them and we can build experience with these
- * implementations.
+ * A module containing functions and macros that *may* be officially added to JSLT in the future.
+ * For now, they're made available here so that people can use them and we can build experience with
+ * these implementations.
  */
 public class ExperimentalModule implements Module {
   public static final String URI = "http://jslt.schibsted.com/2018/experimental";
@@ -53,19 +51,15 @@ public class ExperimentalModule implements Module {
       super("group-by", 3, 3);
     }
 
-    public JsonNode call(Scope scope, JsonNode input,
-                         ExpressionNode[] parameters) {
+    public JsonNode call(Scope scope, JsonNode input, ExpressionNode[] parameters) {
       // this has to be a macro, because the second argument needs to be
       // evaluated in a special context
 
       // first find the array that we iterate over
       JsonNode array = parameters[0].apply(scope, input);
-      if (array.isNull())
-        return NullNode.instance;
-      else if (array.isObject())
-        array = NodeUtils.convertObjectToArray(array);
-      else if (!array.isArray())
-        throw new JsltException("Can't group-by on " + array);
+      if (array.isNull()) return NullNode.instance;
+      else if (array.isObject()) array = NodeUtils.convertObjectToArray(array);
+      else if (!array.isArray()) throw new JsltException("Can't group-by on " + array);
 
       // now start grouping
       Map<JsonNode, ArrayNode> groups = new HashMap();
@@ -94,5 +88,4 @@ public class ExperimentalModule implements Module {
       return result;
     }
   }
-
 }

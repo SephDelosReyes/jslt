@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,18 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Set;
-import java.util.Map;
+import com.schibsted.spt.data.jslt.JsltException;
+import com.schibsted.spt.data.jslt.filters.JsonFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.schibsted.spt.data.jslt.JsltException;
-import com.schibsted.spt.data.jslt.filters.JsonFilter;
+import java.util.Map;
+import java.util.Set;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.ObjectNode;
 
 public class ObjectExpression extends AbstractNode {
   private LetExpression[] lets;
@@ -40,11 +36,12 @@ public class ObjectExpression extends AbstractNode {
   private JsonFilter filter;
   private boolean containsDynamicKeys;
 
-  public ObjectExpression(LetExpression[] lets,
-                          PairExpression[] children,
-                          MatcherExpression matcher,
-                          Location location,
-                          JsonFilter filter) {
+  public ObjectExpression(
+      LetExpression[] lets,
+      PairExpression[] children,
+      MatcherExpression matcher,
+      Location location,
+      JsonFilter filter) {
     super(location);
     this.lets = lets;
     this.children = children;
@@ -53,29 +50,25 @@ public class ObjectExpression extends AbstractNode {
 
     this.keys = new HashSet();
     for (int ix = 0; ix < children.length; ix++) {
-      if (children[ix].isKeyLiteral())
-        keys.add(children[ix].getStaticKey());
+      if (children[ix].isKeyLiteral()) keys.add(children[ix].getStaticKey());
       else {
         containsDynamicKeys = true;
         if (matcher != null)
           throw new JsltException("Object matcher not allowed in objects which have dynamic keys");
       }
     }
-    if (matcher != null)
-      for (String minus : matcher.getMinuses())
-        keys.add(minus);
+    if (matcher != null) for (String minus : matcher.getMinuses()) keys.add(minus);
 
-    if (!containsDynamicKeys)
-      checkForDuplicates();
+    if (!containsDynamicKeys) checkForDuplicates();
   }
 
   private void checkForDuplicates() {
     Set<String> seen = new HashSet(children.length);
     for (int ix = 0; ix < children.length; ix++) {
       if (seen.contains(children[ix].getStaticKey()))
-        throw new JsltException("Invalid object declaration, duplicate key " +
-                                "'" + children[ix].getStaticKey() + "'",
-                                children[ix].getLocation());
+        throw new JsltException(
+            "Invalid object declaration, duplicate key " + "'" + children[ix].getStaticKey() + "'",
+            children[ix].getLocation());
 
       seen.add(children[ix].getStaticKey());
     }
@@ -91,14 +84,14 @@ public class ObjectExpression extends AbstractNode {
         String key = children[ix].applyKey(scope, input);
 
         if (containsDynamicKeys && object.has(key))
-          throw new JsltException("Duplicate key '" + key + "' in object", children[ix].getLocation());
+          throw new JsltException(
+              "Duplicate key '" + key + "' in object", children[ix].getLocation());
 
         object.set(key, value);
       }
     }
 
-    if (matcher != null)
-      evaluateMatcher(scope, input, object);
+    if (matcher != null) evaluateMatcher(scope, input, object);
 
     return object;
   }
@@ -106,15 +99,13 @@ public class ObjectExpression extends AbstractNode {
   private void evaluateMatcher(Scope scope, JsonNode input, ObjectNode object) {
     // find the object to match against
     JsonNode context = contextQuery.apply(scope, input);
-    if (context.isNull() && !context.isObject())
-      return; // no keys to match against
+    if (context.isNull() && !context.isObject()) return; // no keys to match against
 
     // then do the matching
-    Iterator<Map.Entry<String, JsonNode>> it = context.fields();
+    Iterator<Map.Entry<String, JsonNode>> it = context.properties().iterator();
     while (it.hasNext()) {
       Map.Entry<String, JsonNode> pair = it.next();
-      if (keys.contains(pair.getKey()))
-        continue; // the template has defined this key, so skip
+      if (keys.contains(pair.getKey())) continue; // the template has defined this key, so skip
 
       JsonNode value = matcher.apply(scope, pair.getValue());
       object.set(pair.getKey(), value);
@@ -127,27 +118,22 @@ public class ObjectExpression extends AbstractNode {
       contextQuery.checkOk(location); // verify expression is legal
     }
 
-    for (int ix = 0; ix < lets.length; ix++)
-      lets[ix].computeMatchContexts(parent);
+    for (int ix = 0; ix < lets.length; ix++) lets[ix].computeMatchContexts(parent);
 
-    for (int ix = 0; ix < children.length; ix++)
-      children[ix].computeMatchContexts(parent);
+    for (int ix = 0; ix < children.length; ix++) children[ix].computeMatchContexts(parent);
   }
 
   public ExpressionNode optimize() {
-    for (int ix = 0; ix < lets.length; ix++)
-      lets[ix].optimize();
+    for (int ix = 0; ix < lets.length; ix++) lets[ix].optimize();
 
-    if (matcher != null)
-      matcher.optimize();
+    if (matcher != null) matcher.optimize();
 
     boolean allLiterals = matcher == null; // not static otherwise
     for (int ix = 0; ix < children.length; ix++) {
       children[ix] = (PairExpression) children[ix].optimize();
       allLiterals = allLiterals && children[ix].isLiteral();
     }
-    if (!allLiterals)
-      return this;
+    if (!allLiterals) return this;
 
     // we're a static object expression. we can just make the object and
     // turn that into a literal, instead of creating it over and over
@@ -163,8 +149,7 @@ public class ObjectExpression extends AbstractNode {
       lets[ix].register(ctx.scope);
     }
 
-    for (ExpressionNode child : getChildren())
-      child.prepare(ctx);
+    for (ExpressionNode child : getChildren()) child.prepare(ctx);
 
     ctx.scope.leaveScope();
   }
@@ -173,17 +158,14 @@ public class ObjectExpression extends AbstractNode {
     List<ExpressionNode> children = new ArrayList();
     children.addAll(Arrays.asList(lets));
     children.addAll(Arrays.asList(this.children));
-    if (matcher != null)
-      children.add(matcher);
+    if (matcher != null) children.add(matcher);
     return children;
   }
 
   public void dump(int level) {
     System.out.println(NodeUtils.indent(level) + '{');
-    for (int ix = 0; ix < lets.length; ix++)
-      lets[ix].dump(level + 1);
-    for (int ix = 0; ix < children.length; ix++)
-      children[ix].dump(level + 1);
+    for (int ix = 0; ix < lets.length; ix++) lets[ix].dump(level + 1);
+    for (int ix = 0; ix < children.length; ix++) children[ix].dump(level + 1);
     System.out.println(NodeUtils.indent(level) + '}');
   }
 }

@@ -1,0 +1,20 @@
+[versions]
+jackson = '3.1.6'
+javacc = '6.1.0'
+jetty = '12.1.12'
+junit = '4.13.2'
+shadow = '9.6.1'
+
+[libraries]
+jackson-bom = { group = "tools.jackson", name = "jackson-bom", version.ref = "jackson" }
+jackson-databind = { group = "tools.jackson.core", name = "jackson-databind" }
+jackson-dataformat-yaml = { group = "tools.jackson.dataformat", name = "jackson-dataformat-yaml" }
+jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref = "jetty" }
+# ADD THIS: Pulls in jakarta.servlet.* AND the Jetty servlet adapters for modern EE10
+jetty-ee10-servlet = { group = "org.eclipse.jetty.ee10", name = "jetty-ee10-servlet", version.ref = "jetty" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+[plugins]
+gradleup-shadow = { id = 'com.gradleup.shadow', version.ref = 'shadow' }
+intershop-gradle-javacc = {id = 'com.intershop.gradle.javacc', version.ref = 'javacc' }
+spotless = { id = 'com.diffplug.spotless', version = '6.25.0' }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +15,14 @@
 package com.schibsted.spt.data.jslt;
 
 /**
- * Interface to a module, which can come from loading a JSLT or from
- * injecting collections of functions.
+ * Interface to a module, which can come from loading a JSLT or from injecting collections of
+ * functions.
  */
 public interface Module {
 
   /**
-   * Returns the function with the given name. The return value is a
-   * Callable, because the method may also return a macro.
+   * Returns the function with the given name. The return value is a Callable, because the method
+   * may also return a macro.
    */
   public Callable getCallable(String name);
 

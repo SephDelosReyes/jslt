@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +15,8 @@
 package com.schibsted.spt.data.jslt.impl;
 
 /**
- * Class encapsulating what we know about a specific variable. Keeps
- * track of the stack frame slot, but mostly used for optimizations.
+ * Class encapsulating what we know about a specific variable. Keeps track of the stack frame slot,
+ * but mostly used for optimizations.
  */
 public abstract class VariableInfo {
   private int slot;
@@ -55,8 +54,8 @@ public abstract class VariableInfo {
   }
 
   /**
-   * The expression that computes this variable's value. null for
-   * parameters, because in that case we don't know the expression.
+   * The expression that computes this variable's value. null for parameters, because in that case
+   * we don't know the expression.
    */
   public ExpressionNode getDeclaration() {
     return null;

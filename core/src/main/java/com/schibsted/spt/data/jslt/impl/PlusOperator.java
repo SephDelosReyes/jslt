@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,44 +14,34 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 public class PlusOperator extends NumericOperator {
 
-  public PlusOperator(ExpressionNode left, ExpressionNode right,
-                      Location location) {
+  public PlusOperator(ExpressionNode left, ExpressionNode right, Location location) {
     super(left, right, "+", location);
   }
 
   public JsonNode perform(JsonNode v1, JsonNode v2) {
     if (v1.isTextual() || v2.isTextual()) {
       // if one operand is string: do string concatenation
-      return new TextNode(NodeUtils.toString(v1, false) +
-                          NodeUtils.toString(v2, false));
+      return new StringNode(NodeUtils.toString(v1, false) + NodeUtils.toString(v2, false));
 
     } else if (v1.isArray() && v2.isArray())
       // if both are arrays: array concatenation
       return concatenateArrays(v1, v2);
-
     else if (v1.isObject() && v2.isObject())
       // if both are objects: object union
       return unionObjects(v1, v2);
 
     // {} + null => {} (also arrays)
-    else if ((v1.isObject() || v1.isArray()) && v2.isNull())
-      return v1;
+    else if ((v1.isObject() || v1.isArray()) && v2.isNull()) return v1;
 
     // null + {} => {} (also arrays)
-    else if (v1.isNull() && (v2.isObject() || v2.isArray()))
-      return v2;
-
+    else if (v1.isNull() && (v2.isObject() || v2.isArray())) return v2;
     else
       // do numeric operation
       return super.perform(v1, v2);

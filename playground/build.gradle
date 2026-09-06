@@ -1,6 +1,5 @@
-
 plugins {
-  id 'com.github.johnrengelman.shadow' version '7.1.2'
+  alias libs.plugins.gradleup.shadow
 }
 
 apply plugin: 'java'
@@ -12,8 +11,10 @@ repositories {
 
 dependencies {
   implementation project(':core')
-  implementation 'org.eclipse.jetty:jetty-server:9.4.57.v20241219'
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+  implementation libs.jetty.server
+  implementation libs.jetty.ee10.servlet
+  implementation platform(libs.jackson.bom)
+  implementation libs.jackson.databind
 }
 
 group 'com.schibsted.spt.data'

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,51 +14,40 @@
 
 package com.schibsted.spt.data.jslt;
 
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import com.schibsted.spt.data.jslt.filters.DefaultJsonFilter;
+import com.schibsted.spt.data.jslt.filters.JsltJsonFilter;
+import com.schibsted.spt.data.jslt.filters.JsonFilter;
+import com.schibsted.spt.data.jslt.impl.ClasspathResourceResolver;
+import com.schibsted.spt.data.jslt.impl.ParseContext;
+import com.schibsted.spt.data.jslt.impl.PreparationContext;
+import com.schibsted.spt.data.jslt.parser.JsltParser;
+import com.schibsted.spt.data.jslt.parser.ParserImpl;
 import java.io.File;
-import java.io.Reader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.StringReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.FileNotFoundException;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.schibsted.spt.data.jslt.parser.*;
-import com.schibsted.spt.data.jslt.impl.*;
-import com.schibsted.spt.data.jslt.filters.*;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Parses JSLT expressions to Expression objects for evaluating them.
- */
+/** Parses JSLT expressions to Expression objects for evaluating them. */
 public class Parser {
 
-  /**
-   * Compile the given JSLT file.
-   */
+  /** Compile the given JSLT file. */
   public static Expression compile(File jslt) {
     return compile(jslt, Collections.EMPTY_SET);
   }
 
-  /**
-   * Compile the given JSLT file with the given predefined functions.
-   */
+  /** Compile the given JSLT file with the given predefined functions. */
   public static Expression compile(File jslt, Collection<Function> functions) {
     try (FileReader f = new FileReader(jslt)) {
-      return new Parser(f)
-        .withSource(jslt.getAbsolutePath())
-        .withFunctions(functions)
-        .compile();
+      return new Parser(f).withSource(jslt.getAbsolutePath()).withFunctions(functions).compile();
     } catch (FileNotFoundException e) {
       throw new JsltException("Couldn't find file " + jslt);
     } catch (IOException e) {
@@ -67,63 +55,42 @@ public class Parser {
     }
   }
 
-  /**
-   * Compile JSLT expression given as an inline string.
-   */
+  /** Compile JSLT expression given as an inline string. */
   public static Expression compileString(String jslt) {
     return compileString(jslt, Collections.EMPTY_SET);
   }
 
-  /**
-   * Compile JSLT expression given as an inline string with the given
-   * extension functions.
-   */
-  public static Expression compileString(String jslt,
-                                         Collection<Function> functions) {
+  /** Compile JSLT expression given as an inline string with the given extension functions. */
+  public static Expression compileString(String jslt, Collection<Function> functions) {
     return new Parser(new StringReader(jslt))
-      .withSource("<inline>")
-      .withFunctions(functions)
-      .compile();
+        .withSource("<inline>")
+        .withFunctions(functions)
+        .compile();
   }
 
-  /**
-   * Load and compile JSLT expression from the classpath.
-   */
+  /** Load and compile JSLT expression from the classpath. */
   public static Expression compileResource(String jslt) {
     return compileResource(jslt, Collections.EMPTY_SET);
   }
 
-  /**
-   * Load and compile JSLT expression from the classpath with the
-   * given extension functions.
-   */
-  public static Expression compileResource(String jslt,
-                                           Collection<Function> functions) {
+  /** Load and compile JSLT expression from the classpath with the given extension functions. */
+  public static Expression compileResource(String jslt, Collection<Function> functions) {
     try (InputStream stream = Parser.class.getClassLoader().getResourceAsStream(jslt)) {
-      if (stream == null)
-        throw new JsltException("Cannot load resource '" + jslt + "': not found");
+      if (stream == null) throw new JsltException("Cannot load resource '" + jslt + "': not found");
 
       Reader reader = new InputStreamReader(stream, "UTF-8");
-      return new Parser(reader)
-        .withSource(jslt)
-        .withFunctions(functions)
-        .compile();
+      return new Parser(reader).withSource(jslt).withFunctions(functions).compile();
     } catch (IOException e) {
       throw new JsltException("Couldn't read resource " + jslt, e);
     }
   }
 
   /**
-   * Compile JSLT expression from the Reader. The source is just a
-   * name used in error messages, and has no practical effect.
+   * Compile JSLT expression from the Reader. The source is just a name used in error messages, and
+   * has no practical effect.
    */
-  public static Expression compile(String source,
-                                   Reader reader,
-                                   Collection<Function> functions) {
-    return new Parser(reader)
-      .withSource(source)
-      .withFunctions(functions)
-      .compile();
+  public static Expression compile(String source, Reader reader, Collection<Function> functions) {
+    return new Parser(reader).withSource(source).withFunctions(functions).compile();
   }
 
   // ===== FLUENT BUILDER API
@@ -135,9 +102,13 @@ public class Parser {
   private Map<String, Module> modules;
   private JsonFilter objectFilter;
 
-  private Parser(String source, Reader reader, Collection<Function> functions,
-                 ResourceResolver resolver, Map<String, Module> modules,
-                 JsonFilter filter) {
+  private Parser(
+      String source,
+      Reader reader,
+      Collection<Function> functions,
+      ResourceResolver resolver,
+      Map<String, Module> modules,
+      JsonFilter filter) {
     this.functions = functions;
     this.source = source;
     this.reader = reader;
@@ -147,82 +118,76 @@ public class Parser {
   }
 
   /**
-   * Create a Parser reading JSLT source from the given Reader. Uses a
-   * {@link ClasspathResourceResolver} for import statements.
+   * Create a Parser reading JSLT source from the given Reader. Uses a {@link
+   * ClasspathResourceResolver} for import statements.
    */
   public Parser(Reader reader) {
-    this("<unknown>", reader, Collections.EMPTY_SET,
-         new ClasspathResourceResolver(), new HashMap(),
-         new DefaultJsonFilter());
+    this(
+        "<unknown>",
+        reader,
+        Collections.EMPTY_SET,
+        new ClasspathResourceResolver(),
+        new HashMap(),
+        new DefaultJsonFilter());
   }
 
   /**
-   * Create a new Parser with the given source name. The name is a string
-   * used in error messages.
+   * Create a new Parser with the given source name. The name is a string used in error messages.
    */
   public Parser withSource(String thisSource) {
-    return new Parser(thisSource, reader, functions, resolver, modules,
-                      objectFilter);
+    return new Parser(thisSource, reader, functions, resolver, modules, objectFilter);
   }
 
-  /**
-   * Create a new Parser with the given extension functions.
-   */
+  /** Create a new Parser with the given extension functions. */
   public Parser withFunctions(Collection<Function> theseFunctions) {
-    return new Parser(source, reader, theseFunctions, resolver, modules,
-                      objectFilter);
+    return new Parser(source, reader, theseFunctions, resolver, modules, objectFilter);
   }
 
-  /**
-   * Create a new Parser with the given resource resolver.
-   */
+  /** Create a new Parser with the given resource resolver. */
   public Parser withResourceResolver(ResourceResolver thisResolver) {
-    return new Parser(source, reader, functions, thisResolver, modules,
-                      objectFilter);
+    return new Parser(source, reader, functions, thisResolver, modules, objectFilter);
   }
 
   /**
-   * Create a new Parser with the given modules registered. The keys
-   * in the map are the module "names", and importing these names will
-   * bind a prefix to the modules in this map. The names can follow
-   * any syntax.
+   * Create a new Parser with the given modules registered. The keys in the map are the module
+   * "names", and importing these names will bind a prefix to the modules in this map. The names can
+   * follow any syntax.
    */
   public Parser withNamedModules(Map<String, Module> thisModules) {
-    return new Parser(source, reader, functions, resolver, thisModules,
-                      objectFilter);
+    return new Parser(source, reader, functions, resolver, thisModules, objectFilter);
   }
 
   /**
-   * Create a new Parser with the given filter for object values. For
-   * all key/value pairs in objects being created, if this filter
-   * returns false when given the value, the key/value pair is
+   * Create a new Parser with the given filter for object values. For all key/value pairs in objects
+   * being created, if this filter returns false when given the value, the key/value pair is
    * omitted.
    */
   public Parser withObjectFilter(String filter) {
     Expression parsedFilter = Parser.compileString(filter);
-    return new Parser(source, reader, functions, resolver, modules,
-                      new JsltJsonFilter(parsedFilter));
+    return new Parser(
+        source, reader, functions, resolver, modules, new JsltJsonFilter(parsedFilter));
   }
 
   /**
-   * Create a new Parser with the given filter for object values. For
-   * all key/value pairs in objects being created, if this filter
-   * returns false when given the value, the key/value pair is
+   * Create a new Parser with the given filter for object values. For all key/value pairs in objects
+   * being created, if this filter returns false when given the value, the key/value pair is
    * omitted.
    */
   public Parser withObjectFilter(JsonFilter filter) {
-    return new Parser(source, reader, functions, resolver, modules,
-                      filter);
+    return new Parser(source, reader, functions, resolver, modules, filter);
   }
 
-  /**
-   * Compile the JSLT from the defined parameters.
-   */
+  /** Compile the JSLT from the defined parameters. */
   public Expression compile() {
-    ParseContext ctx = new ParseContext(functions, source, resolver, modules,
-                                        new ArrayList(),
-                                        new PreparationContext(),
-                                        objectFilter);
+    ParseContext ctx =
+        new ParseContext(
+            functions,
+            source,
+            resolver,
+            modules,
+            new ArrayList(),
+            new PreparationContext(),
+            objectFilter);
     return ParserImpl.compileExpression(ctx, new JsltParser(reader));
   }
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +17,23 @@ package com.schibsted.spt.data.jslt.impl;
 public class OptimizeUtils {
 
   /**
-   * Removes let expressions for variables that are simply assigned to
-   * literals, because VariableExpression will inline those literals
-   * and remove itself, so there's no need to evaluate the variable.
+   * Removes let expressions for variables that are simply assigned to literals, because
+   * VariableExpression will inline those literals and remove itself, so there's no need to evaluate
+   * the variable.
    */
   public static LetExpression[] optimizeLets(LetExpression[] lets) {
     int count = 0;
     for (int ix = 0; ix < lets.length; ix++) {
       lets[ix].optimize();
-      if (!(lets[ix].getDeclaration() instanceof LiteralExpression))
-        count++;
+      if (!(lets[ix].getDeclaration() instanceof LiteralExpression)) count++;
     }
 
-    if (count == lets.length)
-      return lets;
+    if (count == lets.length) return lets;
 
     LetExpression[] filtered = new LetExpression[count];
     int pos = 0;
     for (int ix = 0; ix < lets.length; ix++) {
-      if (!(lets[ix].getDeclaration() instanceof LiteralExpression))
-        filtered[pos++] = lets[ix];
+      if (!(lets[ix].getDeclaration() instanceof LiteralExpression)) filtered[pos++] = lets[ix];
     }
     return filtered;
   }

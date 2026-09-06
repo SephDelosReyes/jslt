@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +15,12 @@
 package com.schibsted.spt.data.jslt.impl;
 
 import java.util.List;
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 /**
- * Internal interface for the parts of a compiled JSLT expression.
- * Different from the external interface because we want to avoid
- * having convenience methods here, and also because we may want to
- * add methods for introspection (for optimization, generating
- * byte-code, etc).
+ * Internal interface for the parts of a compiled JSLT expression. Different from the external
+ * interface because we want to avoid having convenience methods here, and also because we may want
+ * to add methods for introspection (for optimization, generating byte-code, etc).
  */
 public interface ExpressionNode {
 

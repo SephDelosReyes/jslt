@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +14,11 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.NullNode;
+import java.util.Arrays;
+import java.util.List;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.NullNode;
 
 public class IfExpression extends AbstractNode {
   private ExpressionNode test;
@@ -29,12 +27,13 @@ public class IfExpression extends AbstractNode {
   private LetExpression[] elselets; // can be null
   private ExpressionNode orelse; // can be null
 
-  public IfExpression(ExpressionNode test,
-                      LetExpression[] thenlets,
-                      ExpressionNode then,
-                      LetExpression[] elselets,
-                      ExpressionNode orelse,
-                      Location location) {
+  public IfExpression(
+      ExpressionNode test,
+      LetExpression[] thenlets,
+      ExpressionNode then,
+      LetExpression[] elselets,
+      ExpressionNode orelse,
+      Location location) {
     super(location);
     this.test = test;
     this.thenlets = thenlets;
@@ -53,36 +52,29 @@ public class IfExpression extends AbstractNode {
     if (orelse != null) {
       NodeUtils.evalLets(scope, input, elselets);
       return orelse.apply(scope, input);
-    } else
-      return NullNode.instance;
+    } else return NullNode.instance;
   }
 
   public void computeMatchContexts(DotExpression parent) {
-    for (int ix = 0; ix < thenlets.length; ix++)
-      thenlets[ix].computeMatchContexts(parent);
+    for (int ix = 0; ix < thenlets.length; ix++) thenlets[ix].computeMatchContexts(parent);
     then.computeMatchContexts(parent);
     if (orelse != null) {
       orelse.computeMatchContexts(parent);
-      for (int ix = 0; ix < elselets.length; ix++)
-        elselets[ix].computeMatchContexts(parent);
+      for (int ix = 0; ix < elselets.length; ix++) elselets[ix].computeMatchContexts(parent);
     }
   }
 
   public ExpressionNode optimize() {
-    for (int ix = 0; ix < thenlets.length; ix++)
-      thenlets[ix].optimize();
+    for (int ix = 0; ix < thenlets.length; ix++) thenlets[ix].optimize();
     if (elselets != null) {
-      for (int ix = 0; ix < elselets.length; ix++)
-        elselets[ix].optimize();
+      for (int ix = 0; ix < elselets.length; ix++) elselets[ix].optimize();
     }
 
     test = test.optimize();
     then = then.optimize();
-    if (orelse != null)
-      orelse = orelse.optimize();
+    if (orelse != null) orelse = orelse.optimize();
     return this;
   }
-
 
   public void prepare(PreparationContext ctx) {
     test.prepare(ctx);
@@ -113,10 +105,8 @@ public class IfExpression extends AbstractNode {
     children.add(test);
     children.addAll(Arrays.asList(thenlets));
     children.add(then);
-    if (elselets != null)
-      children.addAll(Arrays.asList(elselets));
-    if (orelse != null)
-      children.add(orelse);
+    if (elselets != null) children.addAll(Arrays.asList(elselets));
+    if (orelse != null) children.add(orelse);
     return children;
   }
 
@@ -125,14 +115,12 @@ public class IfExpression extends AbstractNode {
     test.dump(level + 1);
     System.out.println(NodeUtils.indent(level) + ")");
 
-    for (int ix = 0; ix < thenlets.length; ix++)
-      thenlets[ix].dump(level + 1);
+    for (int ix = 0; ix < thenlets.length; ix++) thenlets[ix].dump(level + 1);
     then.dump(level + 1);
 
     if (orelse != null) {
       System.out.println(NodeUtils.indent(level) + "else");
-      for (int ix = 0; ix < elselets.length; ix++)
-        elselets[ix].dump(level + 1);
+      for (int ix = 0; ix < elselets.length; ix++) elselets[ix].dump(level + 1);
       orelse.dump(level + 1);
     }
   }

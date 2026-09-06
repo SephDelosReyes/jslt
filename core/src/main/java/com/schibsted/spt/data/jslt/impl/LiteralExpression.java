@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +14,9 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 
 public class LiteralExpression extends AbstractNode {
   private JsonNode value;
@@ -38,7 +37,7 @@ public class LiteralExpression extends AbstractNode {
   public String toString() {
     try {
       return NodeUtils.mapper.writeValueAsString(value);
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new JsltException("Couldn't serialize literal value: " + e);
     }
   }

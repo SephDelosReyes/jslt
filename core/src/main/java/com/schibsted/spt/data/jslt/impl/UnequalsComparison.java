@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +14,15 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 public class UnequalsComparison extends AbstractOperator {
 
-  public UnequalsComparison(ExpressionNode left, ExpressionNode right,
-                            Location location) {
+  public UnequalsComparison(ExpressionNode left, ExpressionNode right, Location location) {
     super(left, right, "!=", location);
   }
 
   public JsonNode perform(JsonNode v1, JsonNode v2) {
-    return NodeUtils.toJson(! EqualsComparison.equals(v1, v2) );
+    return NodeUtils.toJson(!EqualsComparison.equals(v1, v2));
   }
-
 }
