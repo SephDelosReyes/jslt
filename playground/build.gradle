@@ -12,6 +12,7 @@ repositories {
 dependencies {
   implementation project(':core')
   implementation libs.jetty.server
+  implementation libs.jetty.ee10.servlet
   implementation platform(libs.jackson.bom)
   implementation libs.jackson.databind
 }
