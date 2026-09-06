@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.gradleup.shadow
     alias libs.plugins.intershop.gradle.javacc
+    alias libs.plugins.spotless
     id 'java'
     id 'com.jfrog.artifactory'
     id 'maven-publish'

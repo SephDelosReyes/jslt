@@ -1,8 +1,6 @@
-
 package com.schibsted.spt.data.jslt;
 
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.IntNode;
 
 public class TestNullFunction implements Function {
 

@@ -1,15 +1,15 @@
 package com.schibsted.spt.data.jslt.buildinfunctions;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.schibsted.spt.data.jslt.Expression;
 import com.schibsted.spt.data.jslt.JsltException;
 import com.schibsted.spt.data.jslt.Parser;
 import com.schibsted.spt.data.jslt.TestBase;
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 public class UuidTest extends TestBase {
   private static ObjectMapper mapper = new ObjectMapper();
@@ -19,7 +19,8 @@ public class UuidTest extends TestBase {
     Expression given = Parser.compileString("uuid()");
     String actual = mapper.writeValueAsString(given.apply(null));
 
-    String uuidRegex = "^\"[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\"$";
+    String uuidRegex =
+        "^\"[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\"$";
     assertTrue(actual.matches(uuidRegex));
   }
 

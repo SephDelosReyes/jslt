@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +14,15 @@
 
 package com.schibsted.spt.data.jslt.impl.lambda;
 
-import tools.jackson.databind.JsonNode;
-import com.schibsted.spt.data.jslt.Parser;
 import com.schibsted.spt.data.jslt.Expression;
+import com.schibsted.spt.data.jslt.Parser;
 import com.schibsted.spt.data.jslt.impl.NodeUtils;
+import tools.jackson.databind.JsonNode;
 
-/**
-  * A lambda function used to create the online demo playground via
-  * API gateway.
-  */
+/** A lambda function used to create the online demo playground via API gateway. */
 public class LambdaFunction {
 
-  /**
-   * Transform the incoming JSON with JSLT and return the result.
-   */
+  /** Transform the incoming JSON with JSLT and return the result. */
   public String invoke(String json) {
     try {
       // this must be:

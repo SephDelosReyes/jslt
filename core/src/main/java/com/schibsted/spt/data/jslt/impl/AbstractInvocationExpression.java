@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,28 +14,18 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.node.IntNode;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.BooleanNode;
 import com.schibsted.spt.data.jslt.Callable;
-import com.schibsted.spt.data.jslt.Function;
 import com.schibsted.spt.data.jslt.JsltException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Common superclass for function and macro expressions, to avoid
- * having to repeat so much code.
- */
+/** Common superclass for function and macro expressions, to avoid having to repeat so much code. */
 public abstract class AbstractInvocationExpression extends AbstractNode {
   private Callable callable; // null until resolve is called
   protected ExpressionNode[] arguments;
 
-  public AbstractInvocationExpression(ExpressionNode[] arguments,
-                                      Location location) {
+  public AbstractInvocationExpression(ExpressionNode[] arguments, Location location) {
     super(location);
     this.arguments = arguments;
   }
@@ -44,32 +33,35 @@ public abstract class AbstractInvocationExpression extends AbstractNode {
   // invoked when we know which callable it's going to be
   public void resolve(Callable callable) {
     this.callable = callable;
-    if (arguments.length < callable.getMinArguments() ||
-        arguments.length > callable.getMaxArguments()) {
+    if (arguments.length < callable.getMinArguments()
+        || arguments.length > callable.getMaxArguments()) {
       String kind = (this instanceof FunctionExpression) ? "Function" : "Macro";
       throw new JsltException(
-        kind + " '" + callable.getName() + "' needs " +
-        callable.getMinArguments() + "-" + callable.getMaxArguments() +
-        " arguments, got " + arguments.length, location
-      );
+          kind
+              + " '"
+              + callable.getName()
+              + "' needs "
+              + callable.getMinArguments()
+              + "-"
+              + callable.getMaxArguments()
+              + " arguments, got "
+              + arguments.length,
+          location);
     }
   }
 
   public void computeMatchContexts(DotExpression parent) {
-    for (int ix = 0; ix < arguments.length; ix++)
-      arguments[ix].computeMatchContexts(parent);
+    for (int ix = 0; ix < arguments.length; ix++) arguments[ix].computeMatchContexts(parent);
   }
 
   public ExpressionNode optimize() {
-    for (int ix = 0; ix < arguments.length; ix++)
-      arguments[ix] = arguments[ix].optimize();
+    for (int ix = 0; ix < arguments.length; ix++) arguments[ix] = arguments[ix].optimize();
     return this;
   }
 
   public void dump(int level) {
     System.out.println(NodeUtils.indent(level) + callable.getName() + "(");
-    for (int ix = 0; ix < arguments.length; ix++)
-      arguments[ix].dump(level + 1);
+    for (int ix = 0; ix < arguments.length; ix++) arguments[ix].dump(level + 1);
     System.out.println(NodeUtils.indent(level) + ')');
   }
 
@@ -84,8 +76,7 @@ public abstract class AbstractInvocationExpression extends AbstractNode {
     buf.append(callable.getName());
     buf.append('(');
     for (int ix = 0; ix < arguments.length; ix++) {
-      if (ix > 0)
-        buf.append(", ");
+      if (ix > 0) buf.append(", ");
       buf.append(arguments[ix].toString());
     }
     buf.append(')');

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +14,7 @@
 
 package com.schibsted.spt.data.jslt;
 
-import tools.jackson.databind.JsonNode;
-
-/**
- * Common interface for macros and functions.
- */
+/** Common interface for macros and functions. */
 public interface Callable {
 
   public String getName();
@@ -27,5 +22,4 @@ public interface Callable {
   public int getMinArguments();
 
   public int getMaxArguments();
-
 }

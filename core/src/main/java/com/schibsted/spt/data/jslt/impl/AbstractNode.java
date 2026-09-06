@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,8 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractNode implements ExpressionNode {
   protected Location location;
@@ -33,12 +32,10 @@ public abstract class AbstractNode implements ExpressionNode {
     System.out.println(NodeUtils.indent(level) + this);
   }
 
-  public void computeMatchContexts(DotExpression parent) {
-  }
+  public void computeMatchContexts(DotExpression parent) {}
 
   public void prepare(PreparationContext ctx) {
-    for (ExpressionNode child : getChildren())
-      child.prepare(ctx);
+    for (ExpressionNode child : getChildren()) child.prepare(ctx);
   }
 
   public ExpressionNode optimize() {

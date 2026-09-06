@@ -1,26 +1,22 @@
-
 package com.schibsted.spt.data.jslt;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collection;
-import java.util.Collections;
-import java.io.Reader;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.junit.Test;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
-/**
- * Utilities for test cases.
- */
+/** Utilities for test cases. */
 public class TestBase {
   static ObjectMapper mapper = new ObjectMapper();
 
@@ -38,28 +34,32 @@ public class TestBase {
     check(input, query, result, Collections.EMPTY_MAP, Collections.EMPTY_SET);
   }
 
-  void check(String input, String query, String result,
-             Map<String, JsonNode> variables) {
+  void check(String input, String query, String result, Map<String, JsonNode> variables) {
     check(input, query, result, variables, Collections.EMPTY_SET);
   }
 
-  void check(String input, String query, String result,
-             Map<String, JsonNode> variables,
-             Collection<Function> functions) {
+  void check(
+      String input,
+      String query,
+      String result,
+      Map<String, JsonNode> variables,
+      Collection<Function> functions) {
     try {
       JsonNode context = mapper.readTree(input);
 
       Expression expr = Parser.compileString(query, functions);
       JsonNode actual = expr.apply(variables, context);
-      if (actual == null)
-        throw new JsltException("Returned Java null");
+      if (actual == null) throw new JsltException("Returned Java null");
 
       // reparse to handle IntNode(2) != LongNode(2)
       actual = mapper.readTree(mapper.writeValueAsString(actual));
 
       JsonNode expected = mapper.readTree(result);
 
-      assertEquals("actual class " + actual.getClass() + ", expected class " + expected.getClass(), expected, actual);
+      assertEquals(
+          "actual class " + actual.getClass() + ", expected class " + expected.getClass(),
+          expected,
+          actual);
     } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
@@ -75,8 +75,7 @@ public class TestBase {
       StringBuilder buf = new StringBuilder();
       while (true) {
         int chars = reader.read(tmp, 0, tmp.length);
-        if (chars == -1)
-          break;
+        if (chars == -1) break;
         buf.append(tmp, 0, chars);
       }
       return buf.toString();
@@ -109,11 +108,11 @@ public class TestBase {
       JsonNode actual = expr.apply(context);
       fail("JSLT did not detect error");
     } catch (JsltException e) {
-      assertTrue("incorrect error message: '" + e.getMessage() + "'",
-                 e.getMessage().indexOf(result) != -1);
+      assertTrue(
+          "incorrect error message: '" + e.getMessage() + "'",
+          e.getMessage().indexOf(result) != -1);
     } catch (JacksonException e) {
       throw new RuntimeException(e);
     }
   }
-
 }

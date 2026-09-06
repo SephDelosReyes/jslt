@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +14,16 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 import tools.jackson.databind.JsonNode;
 
-/**
- * Represents the '* - ... : .'
- */
+/** Represents the '* - ... : .' */
 public class MatcherExpression extends AbstractNode {
   private List<String> minuses;
   private ExpressionNode expr;
 
-  public MatcherExpression(ExpressionNode expr, List<String> minuses,
-                           Location location) {
+  public MatcherExpression(ExpressionNode expr, List<String> minuses, Location location) {
     super(location);
     this.minuses = minuses;
     this.expr = expr;
@@ -49,8 +45,7 @@ public class MatcherExpression extends AbstractNode {
     return Collections.singletonList(expr);
   }
 
-  public void dump(int level) {
-  }
+  public void dump(int level) {}
 
   public ExpressionNode optimize() {
     expr = expr.optimize();

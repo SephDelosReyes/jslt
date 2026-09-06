@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,33 +16,22 @@ package com.schibsted.spt.data.jslt;
 
 import tools.jackson.databind.JsonNode;
 
-/**
- * Interface for function implementations.
- */
+/** Interface for function implementations. */
 public interface Function extends Callable {
 
   // --- repeated from Callable
 
-  /**
-   * The name of the function.
-   */
+  /** The name of the function. */
   public String getName();
 
-  /**
-   * The minimum number of arguments allowed.
-   */
+  /** The minimum number of arguments allowed. */
   public int getMinArguments();
 
-  /**
-   * The maximum number of arguments allowed.
-   */
+  /** The maximum number of arguments allowed. */
   public int getMaxArguments();
 
   // --- own methods
 
-  /**
-   * Perform the function on the given JSON input with the given arguments.
-   */
+  /** Perform the function on the given JSON input with the given arguments. */
   public JsonNode call(JsonNode input, JsonNode[] arguments);
-
 }

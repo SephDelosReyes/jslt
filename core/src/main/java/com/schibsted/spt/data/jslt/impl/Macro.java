@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,18 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import tools.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.Callable;
+import tools.jackson.databind.JsonNode;
 
 /**
- * Interface implemented by all macros. A macro is like a function,
- * except that it controls the evaluation of its arguments itself.
- * That allows it to do things that an ordinary function cannot do.
- * Macros are an internal feature for now.
+ * Interface implemented by all macros. A macro is like a function, except that it controls the
+ * evaluation of its arguments itself. That allows it to do things that an ordinary function cannot
+ * do. Macros are an internal feature for now.
  */
 public interface Macro extends Callable {
 
   /**
-   * Invokes the macro, which can then modify the input node and
-   * evaluate the parameters as needed.
+   * Invokes the macro, which can then modify the input node and evaluate the parameters as needed.
    */
   public JsonNode call(Scope scope, JsonNode input, ExpressionNode[] parameters);
-
 }

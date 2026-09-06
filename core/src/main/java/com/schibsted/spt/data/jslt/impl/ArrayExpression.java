@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,8 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ArrayNode;
 
@@ -30,15 +29,13 @@ public class ArrayExpression extends AbstractNode {
 
   public JsonNode apply(Scope scope, JsonNode input) {
     ArrayNode array = NodeUtils.mapper.createArrayNode();
-    for (int ix = 0; ix < children.length; ix++)
-      array.add(children[ix].apply(scope, input));
+    for (int ix = 0; ix < children.length; ix++) array.add(children[ix].apply(scope, input));
     return array;
   }
 
   public void computeMatchContexts(DotExpression parent) {
     FailDotExpression fail = new FailDotExpression(location, "array");
-    for (int ix = 0; ix < children.length; ix++)
-      children[ix].computeMatchContexts(fail);
+    for (int ix = 0; ix < children.length; ix++) children[ix].computeMatchContexts(fail);
   }
 
   public List<ExpressionNode> getChildren() {
@@ -51,8 +48,7 @@ public class ArrayExpression extends AbstractNode {
       children[ix] = children[ix].optimize();
       allLiterals = allLiterals && (children[ix] instanceof LiteralExpression);
     }
-    if (!allLiterals)
-      return this;
+    if (!allLiterals) return this;
 
     // we're a static array expression. we can just make the array and
     // turn that into a literal, instead of creating it over and over
@@ -62,8 +58,7 @@ public class ArrayExpression extends AbstractNode {
 
   public void dump(int level) {
     System.out.println(NodeUtils.indent(level) + '[');
-    for (int ix = 0; ix < children.length; ix++)
-      children[ix].dump(level + 1);
+    for (int ix = 0; ix < children.length; ix++) children[ix].dump(level + 1);
     System.out.println(NodeUtils.indent(level) + ']');
   }
 }

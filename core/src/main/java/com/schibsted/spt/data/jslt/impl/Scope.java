@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,9 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
-import java.util.Collections;
-import java.util.Deque;
 import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Map;
 import tools.jackson.databind.JsonNode;
 
 public class Scope {
@@ -27,16 +25,15 @@ public class Scope {
   }
 
   /**
-   * Creates an initialized scope with values for variables supplied
-   * by client code into the JSLT expression.
+   * Creates an initialized scope with values for variables supplied by client code into the JSLT
+   * expression.
    */
-  public static Scope makeScope(Map<String, JsonNode> variables,
-                                int stackFrameSize,
-                                Map<String, Integer> parameterSlots) {
+  public static Scope makeScope(
+      Map<String, JsonNode> variables, int stackFrameSize, Map<String, Integer> parameterSlots) {
     Scope scope = new Scope(stackFrameSize);
     for (String variable : variables.keySet())
       if (parameterSlots.containsKey(variable)) // check that variable exists
-        scope.setValue(parameterSlots.get(variable), variables.get(variable));
+      scope.setValue(parameterSlots.get(variable), variables.get(variable));
     return scope;
   }
 
@@ -59,16 +56,12 @@ public class Scope {
   }
 
   public JsonNode getValue(int slot) {
-    if ((slot & BITMASK) != 0)
-      return globalStackFrame[slot & INVERSE];
-    else
-      return localStackFrames.peek()[slot];
+    if ((slot & BITMASK) != 0) return globalStackFrame[slot & INVERSE];
+    else return localStackFrames.peek()[slot];
   }
 
   public void setValue(int slot, JsonNode value) {
-    if ((slot & BITMASK) != 0)
-      globalStackFrame[slot & INVERSE] = value;
-    else
-      localStackFrames.peek()[slot] = value;
+    if ((slot & BITMASK) != 0) globalStackFrame[slot & INVERSE] = value;
+    else localStackFrames.peek()[slot] = value;
   }
 }

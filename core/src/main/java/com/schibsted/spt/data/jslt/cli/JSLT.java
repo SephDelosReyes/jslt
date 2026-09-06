@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +14,19 @@
 
 package com.schibsted.spt.data.jslt.cli;
 
+import com.schibsted.spt.data.jslt.Expression;
+import com.schibsted.spt.data.jslt.Parser;
 import java.io.File;
-
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-import com.schibsted.spt.data.jslt.Parser;
-import com.schibsted.spt.data.jslt.Expression;
-import com.schibsted.spt.data.jslt.impl.ExpressionImpl;
 
 public class JSLT {
 
   public static void main(String[] args) throws Exception {
     if (args.length != 2) {
-      System.out.println("Usage: java com.schibsted.spt.data.jslt.cli.JSLT <jslt file> <json input file>");
+      System.out.println(
+          "Usage: java com.schibsted.spt.data.jslt.cli.JSLT <jslt file> <json input file>");
       System.exit(1);
     }
 
@@ -48,11 +46,8 @@ public class JSLT {
 
     JsonNode output = expr.apply(input);
 
-    if (output == null)
-      System.out.println("WARN: returned Java null!");
+    if (output == null) System.out.println("WARN: returned Java null!");
 
-    System.out.println(mapper.writerWithDefaultPrettyPrinter()
-                       .writeValueAsString(output));
+    System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(output));
   }
-
 }

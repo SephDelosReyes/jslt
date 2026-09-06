@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +17,7 @@ package com.schibsted.spt.data.jslt;
 import java.util.Map;
 import tools.jackson.databind.JsonNode;
 
-/**
- * Represents a compiled JSLT expression.
- */
+/** Represents a compiled JSLT expression. */
 public interface Expression {
 
   // this is an interface because we want to be able to produce
@@ -33,16 +30,16 @@ public interface Expression {
 
   /**
    * Evaluate the expression on the given JSON input.
+   *
    * @param input The JSON input to evaluate the expression on.
    */
   public JsonNode apply(JsonNode input);
 
   /**
-   * Evaluate the expression on the given JSON input, with the given
-   * predefined variables set.
+   * Evaluate the expression on the given JSON input, with the given predefined variables set.
+   *
    * @param variables Variable bindings visible inside the expression.
    * @param input The JSON input to evaluate the expression on.
    */
   public JsonNode apply(Map<String, JsonNode> variables, JsonNode input);
-
 }

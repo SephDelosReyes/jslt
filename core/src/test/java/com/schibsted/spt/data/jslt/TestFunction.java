@@ -1,4 +1,3 @@
-
 package com.schibsted.spt.data.jslt;
 
 import tools.jackson.databind.JsonNode;

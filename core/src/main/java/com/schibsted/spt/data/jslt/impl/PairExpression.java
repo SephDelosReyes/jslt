@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +14,12 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.Collections;
-import tools.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.JsltException;
+import java.util.Arrays;
+import java.util.List;
+import tools.jackson.databind.JsonNode;
 
-/**
- * Represents a ("key" : expr) pair inside a JSON object.
- */
+/** Represents a ("key" : expr) pair inside a JSON object. */
 public class PairExpression extends AbstractNode {
   private ExpressionNode key;
   private ExpressionNode value;
@@ -43,8 +39,7 @@ public class PairExpression extends AbstractNode {
   }
 
   public String getStaticKey() {
-    if (!isKeyLiteral())
-      throw new JsltException("INTERNAL ERROR: Attempted to get non-static key");
+    if (!isKeyLiteral()) throw new JsltException("INTERNAL ERROR: Attempted to get non-static key");
     return key.apply(null, null).asString();
   }
 
@@ -55,10 +50,8 @@ public class PairExpression extends AbstractNode {
   public void computeMatchContexts(DotExpression parent) {
     // a pair that has a dynamic key cannot use matching in the value
     DotExpression expr;
-    if (isKeyLiteral())
-      expr = new DotExpression(getStaticKey(), parent, location);
-    else
-      expr = new FailDotExpression(location, "dynamic object");
+    if (isKeyLiteral()) expr = new DotExpression(getStaticKey(), parent, location);
+    else expr = new FailDotExpression(location, "dynamic object");
 
     value.computeMatchContexts(expr);
   }

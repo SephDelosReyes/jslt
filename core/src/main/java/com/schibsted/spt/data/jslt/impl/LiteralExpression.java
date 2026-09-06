@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +14,9 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
+import com.schibsted.spt.data.jslt.JsltException;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
-import com.schibsted.spt.data.jslt.JsltException;
 
 public class LiteralExpression extends AbstractNode {
   private JsonNode value;

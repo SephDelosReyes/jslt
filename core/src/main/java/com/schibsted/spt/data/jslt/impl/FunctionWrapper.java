@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,20 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.HashMap;
-
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.IntNode;
-import tools.jackson.databind.node.StringNode;
-import tools.jackson.databind.node.LongNode;
-import tools.jackson.databind.node.FloatNode;
-import tools.jackson.databind.node.DoubleNode;
-import tools.jackson.databind.node.BooleanNode;
 import com.schibsted.spt.data.jslt.Function;
 import com.schibsted.spt.data.jslt.JsltException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.BooleanNode;
+import tools.jackson.databind.node.DoubleNode;
+import tools.jackson.databind.node.FloatNode;
+import tools.jackson.databind.node.IntNode;
+import tools.jackson.databind.node.LongNode;
+import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.node.StringNode;
 
 public class FunctionWrapper implements Function {
   private String name;
@@ -62,8 +60,7 @@ public class FunctionWrapper implements Function {
 
   public JsonNode call(JsonNode input, JsonNode[] arguments) {
     Object[] args = new Object[arguments.length];
-    for (int ix = 0; ix < arguments.length; ix++)
-      args[ix] = converters[ix].convert(arguments[ix]);
+    for (int ix = 0; ix < arguments.length; ix++) args[ix] = converters[ix].convert(arguments[ix]);
 
     try {
       Object result = method.invoke(null, args);
@@ -82,6 +79,7 @@ public class FunctionWrapper implements Function {
   }
 
   private static Map<Class, ToJavaConverter> toJava = new HashMap();
+
   static {
     toJava.put(String.class, new StringJavaConverter());
     toJava.put(int.class, new IntJavaConverter());
@@ -93,55 +91,43 @@ public class FunctionWrapper implements Function {
 
   private static ToJavaConverter makeJavaConverter(Class type) {
     ToJavaConverter converter = toJava.get(type);
-    if (converter == null)
-      throw new JsltException("Cannot build converter to " + type);
+    if (converter == null) throw new JsltException("Cannot build converter to " + type);
     return converter;
   }
 
   static class StringJavaConverter implements ToJavaConverter {
     public Object convert(JsonNode node) {
-      if (node.isNull())
-        return null;
-      else if (node.isTextual())
-        return node.asString();
-      else
-        throw new JsltException("Could not convert " + node + " to string");
+      if (node.isNull()) return null;
+      else if (node.isTextual()) return node.asString();
+      else throw new JsltException("Could not convert " + node + " to string");
     }
   }
 
   static class LongJavaConverter implements ToJavaConverter {
     public Object convert(JsonNode node) {
-      if (!node.isNumber())
-        throw new JsltException("Cannot convert " + node + " to long");
-      else
-        return node.asLong();
+      if (!node.isNumber()) throw new JsltException("Cannot convert " + node + " to long");
+      else return node.asLong();
     }
   }
 
   static class IntJavaConverter implements ToJavaConverter {
     public Object convert(JsonNode node) {
-      if (!node.isNumber())
-        throw new JsltException("Cannot convert " + node + " to int");
-      else
-        return node.asInt();
+      if (!node.isNumber()) throw new JsltException("Cannot convert " + node + " to int");
+      else return node.asInt();
     }
   }
 
   static class BooleanJavaConverter implements ToJavaConverter {
     public Object convert(JsonNode node) {
-      if (!node.isBoolean())
-        throw new JsltException("Cannot convert " + node + " to boolean");
-      else
-        return node.asBoolean();
+      if (!node.isBoolean()) throw new JsltException("Cannot convert " + node + " to boolean");
+      else return node.asBoolean();
     }
   }
 
   static class DoubleJavaConverter implements ToJavaConverter {
     public Object convert(JsonNode node) {
-      if (!node.isNumber())
-        throw new JsltException("Cannot convert " + node + " to double");
-      else
-        return node.asDouble();
+      if (!node.isNumber()) throw new JsltException("Cannot convert " + node + " to double");
+      else return node.asDouble();
     }
   }
 
@@ -152,6 +138,7 @@ public class FunctionWrapper implements Function {
   }
 
   private static Map<Class, ToJsonConverter> toJson = new HashMap();
+
   static {
     toJson.put(String.class, new StringJsonConverter());
     toJson.put(long.class, new LongJsonConverter());
@@ -161,66 +148,52 @@ public class FunctionWrapper implements Function {
     toJson.put(float.class, new FloatJsonConverter());
   }
 
-  static private ToJsonConverter makeJsonConverter(Class type) {
+  private static ToJsonConverter makeJsonConverter(Class type) {
     ToJsonConverter converter = toJson.get(type);
-    if (converter == null)
-      throw new JsltException("Cannot build converter from " + type);
+    if (converter == null) throw new JsltException("Cannot build converter from " + type);
     return converter;
   }
 
   static class StringJsonConverter implements ToJsonConverter {
     public JsonNode convert(Object node) {
-      if (node == null)
-        return NullNode.instance;
-      else
-        return new StringNode((String) node);
+      if (node == null) return NullNode.instance;
+      else return new StringNode((String) node);
     }
   }
 
   static class LongJsonConverter implements ToJsonConverter {
     public JsonNode convert(Object node) {
-      if (node == null)
-        return NullNode.instance;
-      else
-        return new LongNode((Long) node);
+      if (node == null) return NullNode.instance;
+      else return new LongNode((Long) node);
     }
   }
 
   static class IntJsonConverter implements ToJsonConverter {
     public JsonNode convert(Object node) {
-      if (node == null)
-        return NullNode.instance;
-      else
-        return new IntNode((Integer) node);
+      if (node == null) return NullNode.instance;
+      else return new IntNode((Integer) node);
     }
   }
 
   static class BooleanJsonConverter implements ToJsonConverter {
     public JsonNode convert(Object node) {
-      if (node == null)
-        return NullNode.instance;
-      else if ((Boolean) node)
-        return BooleanNode.TRUE;
-      else
-        return BooleanNode.FALSE;
+      if (node == null) return NullNode.instance;
+      else if ((Boolean) node) return BooleanNode.TRUE;
+      else return BooleanNode.FALSE;
     }
   }
 
   static class DoubleJsonConverter implements ToJsonConverter {
     public JsonNode convert(Object node) {
-      if (node == null)
-        return NullNode.instance;
-      else
-        return new DoubleNode((Double) node);
+      if (node == null) return NullNode.instance;
+      else return new DoubleNode((Double) node);
     }
   }
 
   static class FloatJsonConverter implements ToJsonConverter {
     public JsonNode convert(Object node) {
-      if (node == null)
-        return NullNode.instance;
-      else
-        return new FloatNode((Float) node);
+      if (node == null) return NullNode.instance;
+      else return new FloatNode((Float) node);
     }
   }
 }

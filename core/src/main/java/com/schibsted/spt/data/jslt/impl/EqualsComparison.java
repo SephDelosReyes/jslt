@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +18,7 @@ import tools.jackson.databind.JsonNode;
 
 public class EqualsComparison extends AbstractOperator {
 
-  public EqualsComparison(ExpressionNode left, ExpressionNode right,
-                          Location location) {
+  public EqualsComparison(ExpressionNode left, ExpressionNode right, Location location) {
     super(left, right, "==", location);
   }
 
@@ -39,10 +37,7 @@ public class EqualsComparison extends AbstractOperator {
       if (v1.isIntegralNumber() && v2.isIntegralNumber())
         // if both are integers, then compare them as such
         return v1.longValue() == v2.longValue();
-      else
-        return v1.doubleValue() == v2.doubleValue();
-    } else
-      return v1.equals(v2);
+      else return v1.doubleValue() == v2.doubleValue();
+    } else return v1.equals(v2);
   }
-
 }

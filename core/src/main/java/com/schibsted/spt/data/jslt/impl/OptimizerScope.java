@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +17,8 @@ package com.schibsted.spt.data.jslt.impl;
 import tools.jackson.databind.JsonNode;
 
 /**
- * Fake scope used when optimizing away objects that are static, but
- * can contain lets anyway. To evaluate those to their values we need
- * a scope that does nothing. Which is this class.
+ * Fake scope used when optimizing away objects that are static, but can contain lets anyway. To
+ * evaluate those to their values we need a scope that does nothing. Which is this class.
  */
 public class OptimizerScope extends Scope {
 
@@ -28,6 +26,5 @@ public class OptimizerScope extends Scope {
     super(0);
   }
 
-  public void setValue(int slot, JsonNode value) {
-  }
+  public void setValue(int slot, JsonNode value) {}
 }

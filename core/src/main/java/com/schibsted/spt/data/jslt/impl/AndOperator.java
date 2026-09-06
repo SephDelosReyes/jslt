@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,19 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
+import com.schibsted.spt.data.jslt.JsltException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.BooleanNode;
-import com.schibsted.spt.data.jslt.JsltException;
 
 public class AndOperator extends AbstractOperator {
 
-  public AndOperator(ExpressionNode left, ExpressionNode right,
-                     Location location) {
+  public AndOperator(ExpressionNode left, ExpressionNode right, Location location) {
     super(left, right, "and", location);
   }
 
   public JsonNode apply(Scope scope, JsonNode input) {
     boolean v1 = NodeUtils.isTrue(left.apply(scope, input));
-    if (!v1)
-      return BooleanNode.FALSE;
+    if (!v1) return BooleanNode.FALSE;
 
     boolean v2 = NodeUtils.isTrue(right.apply(scope, input));
     return NodeUtils.toJson(v1 && v2);

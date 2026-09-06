@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +17,11 @@ package com.schibsted.spt.data.jslt;
 import java.io.Reader;
 
 /**
- * Given a string identifying a JSLT module file, return a Reader that
- * produces the module. This abstract class can be used to look up module
- * files other places than just on the classpath.
+ * Given a string identifying a JSLT module file, return a Reader that produces the module. This
+ * abstract class can be used to look up module files other places than just on the classpath.
  */
 public interface ResourceResolver {
 
-  /**
-   * Return a Reader for the given module.
-   */
+  /** Return a Reader for the given module. */
   public Reader resolve(String jslt);
-
 }

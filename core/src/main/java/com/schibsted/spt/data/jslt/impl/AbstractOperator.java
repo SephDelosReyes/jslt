@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +14,18 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import tools.jackson.databind.JsonNode;
 
-/**
- * Shared abstract superclass for comparison operators and others.
- */
+/** Shared abstract superclass for comparison operators and others. */
 public abstract class AbstractOperator extends AbstractNode {
   protected ExpressionNode left;
   protected ExpressionNode right;
   private String operator;
 
-  public AbstractOperator(ExpressionNode left, ExpressionNode right,
-                          String operator, Location location) {
+  public AbstractOperator(
+      ExpressionNode left, ExpressionNode right, String operator, Location location) {
     super(location);
     this.left = left;
     this.right = right;
@@ -55,8 +52,7 @@ public abstract class AbstractOperator extends AbstractNode {
     // result right now and be done with it
     if (left instanceof LiteralExpression && right instanceof LiteralExpression)
       return new LiteralExpression(apply(null, null), location);
-    else
-      return this;
+    else return this;
   }
 
   public void computeMatchContexts(DotExpression parent) {

@@ -1,30 +1,17 @@
-
 package com.schibsted.spt.data.jslt;
 
-import java.util.List;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import org.junit.Test;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
-/**
- * JSON parsing test cases that are supposed to cause syntax error.
- */
+/** JSON parsing test cases that are supposed to cause syntax error. */
 @RunWith(Parameterized.class)
 public class JsonParseErrorTest {
   private String json;
@@ -49,8 +36,7 @@ public class JsonParseErrorTest {
     JsonNode tests = json.get("tests");
 
     List<Object[]> strings = new ArrayList();
-    for (int ix = 0; ix < tests.size(); ix++)
-      strings.add(new Object[] { tests.get(ix).asString() });
+    for (int ix = 0; ix < tests.size(); ix++) strings.add(new Object[] {tests.get(ix).asString()});
     return strings;
   }
 }

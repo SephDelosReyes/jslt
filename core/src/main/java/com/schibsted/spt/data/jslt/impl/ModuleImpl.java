@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +14,12 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
-import com.schibsted.spt.data.jslt.Module;
 import com.schibsted.spt.data.jslt.Callable;
 import com.schibsted.spt.data.jslt.Function;
+import com.schibsted.spt.data.jslt.Module;
+import java.util.Map;
 
-/**
- * In-memory module.
- */
+/** In-memory module. */
 public class ModuleImpl implements Module {
   Map<String, Function> functions;
 

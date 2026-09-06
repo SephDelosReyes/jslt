@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +14,17 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.node.IntNode;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.BooleanNode;
 import com.schibsted.spt.data.jslt.Function;
 import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.NullNode;
 
 public class FunctionExpression extends AbstractInvocationExpression {
   private Function function; // null before resolution
   private FunctionDeclaration declared; // non-null if a declared function
   private String name;
 
-  public FunctionExpression(String name, ExpressionNode[] arguments,
-                            Location location) {
+  public FunctionExpression(String name, ExpressionNode[] arguments, Location location) {
     super(arguments, location);
     this.name = name;
   }
@@ -41,40 +36,37 @@ public class FunctionExpression extends AbstractInvocationExpression {
   public void resolve(Function function) {
     super.resolve(function);
     this.function = function;
-    if (function instanceof FunctionDeclaration)
-      this.declared = (FunctionDeclaration) function;
+    if (function instanceof FunctionDeclaration) this.declared = (FunctionDeclaration) function;
   }
 
   public JsonNode apply(Scope scope, JsonNode input) {
     JsonNode[] params = new JsonNode[arguments.length];
-    for (int ix = 0; ix < params.length; ix++)
-      params[ix] = arguments[ix].apply(scope, input);
+    for (int ix = 0; ix < params.length; ix++) params[ix] = arguments[ix].apply(scope, input);
 
-    if (declared != null)
-      return declared.call(scope, input, params);
+    if (declared != null) return declared.call(scope, input, params);
     else {
       JsonNode value = function.call(input, params);
 
       // if the user-implemented function returns Java null, silently
       // turn it into a JSON null. (the alternative is to throw an
       // exception.)
-      if (value == null)
-        value = NullNode.instance;
+      if (value == null) value = NullNode.instance;
 
       return value;
     }
   }
 
   private static final int OPTIMIZE_ARRAY_CONTAINS_MIN = 10;
+
   public ExpressionNode optimize() {
     super.optimize();
 
     // if the second argument to contains() is an array with a large
     // number of elements, don't do a linear search. instead, use an
     // optimized version of the function that uses a HashSet
-    if (function == BuiltinFunctions.functions.get("contains") &&
-        arguments.length == 2 &&
-        (arguments[1] instanceof LiteralExpression)) {
+    if (function == BuiltinFunctions.functions.get("contains")
+        && arguments.length == 2
+        && (arguments[1] instanceof LiteralExpression)) {
 
       JsonNode v = arguments[1].apply(null, null);
       if (v.isArray() && v.size() > OPTIMIZE_ARRAY_CONTAINS_MIN) {
@@ -88,8 +80,7 @@ public class FunctionExpression extends AbstractInvocationExpression {
       int ix = ((RegexpFunction) function).regexpArgumentNumber();
       if (arguments[ix] instanceof LiteralExpression) {
         String r = NodeUtils.toString(arguments[ix].apply(null, null), true);
-        if (r == null)
-          throw new JsltException("Regexp cannot be null");
+        if (r == null) throw new JsltException("Regexp cannot be null");
 
         // will fill in cache, and throw correct exception
         BuiltinFunctions.getRegexp(r);

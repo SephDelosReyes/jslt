@@ -1,44 +1,37 @@
-
 package com.schibsted.spt.data.jslt;
 
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Iterator;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import com.schibsted.spt.data.jslt.filters.TrueJsonFilter;
+import com.schibsted.spt.data.jslt.impl.ClasspathResourceResolver;
+import com.schibsted.spt.data.jslt.impl.ModuleImpl;
+import java.io.StringReader;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.io.IOException;
-import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.nio.charset.StandardCharsets;
-
-import org.junit.Test;
 import org.junit.Ignore;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import java.math.BigInteger;
-
+import org.junit.Test;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.BigIntegerNode;
+import tools.jackson.databind.node.FloatNode;
 import tools.jackson.databind.node.IntNode;
 import tools.jackson.databind.node.NullNode;
 import tools.jackson.databind.node.StringNode;
-import tools.jackson.databind.node.FloatNode;
-import tools.jackson.databind.node.ArrayNode;
-import tools.jackson.databind.node.BigIntegerNode;
 
-import com.schibsted.spt.data.jslt.Module;
-import com.schibsted.spt.data.jslt.impl.ModuleImpl;
-import com.schibsted.spt.data.jslt.impl.ClasspathResourceResolver;
-import com.schibsted.spt.data.jslt.filters.*;
-
-/**
- * Tests that cannot be expressed in JSON.
- */
+/** Tests that cannot be expressed in JSON. */
 public class StaticTests extends TestBase {
   private static ObjectMapper mapper = new ObjectMapper();
 
@@ -84,26 +77,37 @@ public class StaticTests extends TestBase {
 
   @Test
   public void testJavaExtensionFunction() {
-    check("{}", "test()", "42", Collections.EMPTY_MAP,
-          Collections.singleton(new TestFunction()));
+    check("{}", "test()", "42", Collections.EMPTY_MAP, Collections.singleton(new TestFunction()));
   }
 
   @Test
   public void testJavaExtensionFunctionNull() {
-    check("{}", "test()", "null", Collections.EMPTY_MAP,
-          Collections.singleton(new TestNullFunction()));
+    check(
+        "{}",
+        "test()",
+        "null",
+        Collections.EMPTY_MAP,
+        Collections.singleton(new TestNullFunction()));
   }
 
   @Test
   public void testJavaExtensionFunctionNullInExpression() {
-    check("{}", "test() or 42", "true", Collections.EMPTY_MAP,
-          Collections.singleton(new TestNullFunction()));
+    check(
+        "{}",
+        "test() or 42",
+        "true",
+        Collections.EMPTY_MAP,
+        Collections.singleton(new TestNullFunction()));
   }
 
   @Test
   public void testJavaExtensionFunctionNullInExpression2() {
-    check("{}", "lowercase(test())", "null", Collections.EMPTY_MAP,
-          Collections.singleton(new TestNullFunction()));
+    check(
+        "{}",
+        "lowercase(test())",
+        "null",
+        Collections.EMPTY_MAP,
+        Collections.singleton(new TestNullFunction()));
   }
 
   @Test
@@ -113,10 +117,10 @@ public class StaticTests extends TestBase {
     long delta = 1000; // milliseconds of wriggle-room
 
     assertTrue(now1.isDouble());
-    assertTrue("now1 (" + now1 + ") << now2 (" + now2 + ")",
-               (now1.asDouble() * 1000) < (now2 + delta));
-    assertTrue("now1 (" + now1 + ") >> now2 (" + now2 + ")",
-               (now1.asDouble() * 1000) > (now2 - delta));
+    assertTrue(
+        "now1 (" + now1 + ") << now2 (" + now2 + ")", (now1.asDouble() * 1000) < (now2 + delta));
+    assertTrue(
+        "now1 (" + now1 + ") >> now2 (" + now2 + ")", (now1.asDouble() * 1000) > (now2 - delta));
   }
 
   @Test
@@ -145,7 +149,8 @@ public class StaticTests extends TestBase {
     assertTrue(actual.booleanValue());
   }
 
-  @Test @Ignore // this takes a while to run, so we don't usually do it
+  @Test
+  @Ignore // this takes a while to run, so we don't usually do it
   public void testRegexpCache() {
     // generate lots and lots of regular expressions, and see if we
     // manage to blow up the cache
@@ -166,8 +171,7 @@ public class StaticTests extends TestBase {
       buf.append("(");
       for (int ix = 0; ix < parts; ix++) {
         buf.append(generateRegexp());
-        if (ix + 1 < parts)
-          buf.append("|");
+        if (ix + 1 < parts) buf.append("|");
       }
       buf.append(")");
       return buf.toString();
@@ -176,15 +180,15 @@ public class StaticTests extends TestBase {
       // generate simple expression
       int kind = (int) (Math.random() * 4);
 
-      switch(kind) {
-      case 0:
-        return "[A-Za-z0-9]+";
-      case 1:
-        return makeRandomString(10);
-      case 2:
-        return "\\d+";
-      case 3:
-        return "20\\d\\d-[01]\\d-[0123]\\d";
+      switch (kind) {
+        case 0:
+          return "[A-Za-z0-9]+";
+        case 1:
+          return makeRandomString(10);
+        case 2:
+          return "\\d+";
+        case 3:
+          return "20\\d\\d-[01]\\d-[0123]\\d";
       }
     }
 
@@ -193,8 +197,7 @@ public class StaticTests extends TestBase {
 
   private String makeRandomString(int length) {
     char[] buf = new char[length];
-    for (int ix = 0; ix < length; ix++)
-      buf[ix++] = (char) ('a' + ((char) (Math.random() * 26)));
+    for (int ix = 0; ix < length; ix++) buf[ix++] = (char) ('a' + ((char) (Math.random() * 26)));
     return new String(buf);
   }
 
@@ -207,12 +210,8 @@ public class StaticTests extends TestBase {
     Map<String, Module> modules = new HashMap();
     modules.put("the test module", module);
 
-    StringReader jslt = new StringReader(
-      "import \"the test module\" as t t:test()"
-    );
-    Expression expr = new Parser(jslt)
-      .withNamedModules(modules)
-      .compile();
+    StringReader jslt = new StringReader("import \"the test module\" as t t:test()");
+    Expression expr = new Parser(jslt).withNamedModules(modules).compile();
 
     JsonNode result = expr.apply(null);
     assertEquals(new IntNode(42), result);
@@ -223,16 +222,10 @@ public class StaticTests extends TestBase {
     // filter to accept everything that isn't null
     String filter = " . != null ";
 
-    StringReader jslt = new StringReader(
-      "{ \"foo\" : null, \"bar\" : \"\" }"
-    );
-    Expression expr = new Parser(jslt)
-      .withObjectFilter(filter)
-      .compile();
+    StringReader jslt = new StringReader("{ \"foo\" : null, \"bar\" : \"\" }");
+    Expression expr = new Parser(jslt).withObjectFilter(filter).compile();
 
-    JsonNode desired = mapper.readTree(
-      "{ \"bar\" : \"\" }"
-    );
+    JsonNode desired = mapper.readTree("{ \"bar\" : \"\" }");
 
     JsonNode result = expr.apply(null);
     assertEquals(desired, result);
@@ -243,16 +236,10 @@ public class StaticTests extends TestBase {
     // filter to accept everything that isn't the empty string
     String filter = " . != \"\" ";
 
-    StringReader jslt = new StringReader(
-      "{ \"foo\" : null, \"bar\" : \"\" }"
-    );
-    Expression expr = new Parser(jslt)
-      .withObjectFilter(filter)
-      .compile();
+    StringReader jslt = new StringReader("{ \"foo\" : null, \"bar\" : \"\" }");
+    Expression expr = new Parser(jslt).withObjectFilter(filter).compile();
 
-    JsonNode desired = mapper.readTree(
-      "{ \"foo\" : null }"
-    );
+    JsonNode desired = mapper.readTree("{ \"foo\" : null }");
 
     JsonNode result = expr.apply(null);
     assertEquals(desired, result);
@@ -263,20 +250,12 @@ public class StaticTests extends TestBase {
     // filter to accept everything that isn't the empty string
     String filter = " . != \"\" ";
 
-    StringReader jslt = new StringReader(
-      "{for (.) .key : .value }"
-    );
-    Expression expr = new Parser(jslt)
-      .withObjectFilter(filter)
-      .compile();
+    StringReader jslt = new StringReader("{for (.) .key : .value }");
+    Expression expr = new Parser(jslt).withObjectFilter(filter).compile();
 
-    JsonNode input = mapper.readTree(
-      "{ \"foo\" : null, \"bar\" : \"\" }"
-    );
+    JsonNode input = mapper.readTree("{ \"foo\" : null, \"bar\" : \"\" }");
 
-    JsonNode desired = mapper.readTree(
-      "{ \"foo\" : null }"
-    );
+    JsonNode desired = mapper.readTree("{ \"foo\" : null }");
 
     JsonNode result = expr.apply(input);
     assertEquals(desired, result);
@@ -284,20 +263,12 @@ public class StaticTests extends TestBase {
 
   @Test
   public void testTrueObjectFilter() {
-    StringReader jslt = new StringReader(
-      "{for (.) .key : .value }"
-    );
-    Expression expr = new Parser(jslt)
-      .withObjectFilter(new TrueJsonFilter())
-      .compile();
+    StringReader jslt = new StringReader("{for (.) .key : .value }");
+    Expression expr = new Parser(jslt).withObjectFilter(new TrueJsonFilter()).compile();
 
-    JsonNode input = mapper.readTree(
-      "{ \"foo\" : null, \"bar\" : \"\" }"
-    );
+    JsonNode input = mapper.readTree("{ \"foo\" : null, \"bar\" : \"\" }");
 
-    JsonNode desired = mapper.readTree(
-      "{ \"foo\" : null, \"bar\" : \"\" }"
-    );
+    JsonNode desired = mapper.readTree("{ \"foo\" : null, \"bar\" : \"\" }");
 
     JsonNode result = expr.apply(input);
     assertEquals(desired, result);
@@ -327,9 +298,8 @@ public class StaticTests extends TestBase {
   @Test
   public void testClasspathResolverCharEncoding() {
     ClasspathResourceResolver r = new ClasspathResourceResolver(StandardCharsets.ISO_8859_1);
-    Expression expr = new Parser(r.resolve("character-encoding-master.jslt"))
-      .withResourceResolver(r)
-      .compile();
+    Expression expr =
+        new Parser(r.resolve("character-encoding-master.jslt")).withResourceResolver(r).compile();
 
     JsonNode result = expr.apply(NullNode.instance);
     assertEquals("Hei på deg", result.asString());
@@ -337,12 +307,12 @@ public class StaticTests extends TestBase {
 
   @Test
   public void testPipeOperatorAndObjectMatcher() {
-    Expression expr = Parser.compileString("{\"bar\": \"baz\",\"foo\":{ \"a\": \"b\" } | {\"type\" : \"Anonymized-View\",* : .}}");
+    Expression expr =
+        Parser.compileString(
+            "{\"bar\": \"baz\",\"foo\":{ \"a\": \"b\" } | {\"type\" : \"Anonymized-View\",* : .}}");
 
-
-    JsonNode desired = mapper.readTree(
-            "{\"bar\":\"baz\",\"foo\":{\"type\":\"Anonymized-View\",\"a\":\"b\"}}"
-    );
+    JsonNode desired =
+        mapper.readTree("{\"bar\":\"baz\",\"foo\":{\"type\":\"Anonymized-View\",\"a\":\"b\"}}");
 
     JsonNode result = expr.apply(null);
     assertEquals(desired, result);
@@ -403,26 +373,27 @@ public class StaticTests extends TestBase {
     List<Exception> exceptionsThrown = Collections.synchronizedList(new ArrayList());
 
     for (int i = 0; i < threads; i++) {
-      service.submit(() -> {
-        String input = "[{\"a\":null,\"b\":\"b\"}]";
+      service.submit(
+          () -> {
+            String input = "[{\"a\":null,\"b\":\"b\"}]";
 
-        String expression = "\n"
-            + "  {\n"
-            + "    \"a\": .a,\n"
-            + "    \"b\": .b,\n"
-            + "    \"c\": sha256-hex(random()),\n"
-            + "  }\n";
+            String expression =
+                "\n"
+                    + "  {\n"
+                    + "    \"a\": .a,\n"
+                    + "    \"b\": .b,\n"
+                    + "    \"c\": sha256-hex(random()),\n"
+                    + "  }\n";
 
-        try {
-          JsonNode jsonInputEvent = mapper.readTree(input);
-          Expression expr = Parser.compileString(expression);
-          for (int ix = 0; ix < 1000; ix++)
-            expr.apply(jsonInputEvent);
+            try {
+              JsonNode jsonInputEvent = mapper.readTree(input);
+              Expression expr = Parser.compileString(expression);
+              for (int ix = 0; ix < 1000; ix++) expr.apply(jsonInputEvent);
 
-        } catch (Exception e) {
-          exceptionsThrown.add(e);
-        }
-      });
+            } catch (Exception e) {
+              exceptionsThrown.add(e);
+            }
+          });
     }
     service.shutdown();
     service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);

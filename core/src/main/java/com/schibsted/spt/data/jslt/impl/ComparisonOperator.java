@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +14,13 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import tools.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.JsltException;
+import tools.jackson.databind.JsonNode;
 
 public abstract class ComparisonOperator extends AbstractOperator {
 
-  public ComparisonOperator(ExpressionNode left, ExpressionNode right,
-                            String operator, Location location) {
+  public ComparisonOperator(
+      ExpressionNode left, ExpressionNode right, String operator, Location location) {
     super(left, right, operator, location);
   }
 
@@ -44,15 +43,11 @@ public abstract class ComparisonOperator extends AbstractOperator {
 
     } else if (v1.isNull() || v2.isNull()) {
       // null is equal to itself, and considered the smallest of all
-      if (v1.isNull() && v2.isNull())
-        return 0;
-      else if (v1.isNull())
-        return -1;
-      else
-        return 1;
+      if (v1.isNull() && v2.isNull()) return 0;
+      else if (v1.isNull()) return -1;
+      else return 1;
     }
 
     throw new JsltException("Can't compare " + v1 + " and " + v2, location);
   }
-
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +14,9 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.BooleanNode;
 
 public class LetExpression extends AbstractNode {
   private String variable;
@@ -52,8 +48,7 @@ public class LetExpression extends AbstractNode {
   }
 
   public void dump(int level) {
-    System.out.println(NodeUtils.indent(level) +
-                       "let " + variable + " =");
+    System.out.println(NodeUtils.indent(level) + "let " + variable + " =");
     value.dump(level + 1);
   }
 

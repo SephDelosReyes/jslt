@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,31 +14,30 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
+import com.schibsted.spt.data.jslt.JsltException;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.ArrayDeque;
-import com.schibsted.spt.data.jslt.JsltException;
+import java.util.Map;
 
 /**
- * Keeps track of declared variables and maps them to their slots in
- * the stack frames. A stack frame is just an array, with one slot for
- * each variable. There are two kinds of stack frame: the global one,
- * which has top-level variables plus those from the top level of
- * modules. The second type is inside a function.
+ * Keeps track of declared variables and maps them to their slots in the stack frames. A stack frame
+ * is just an array, with one slot for each variable. There are two kinds of stack frame: the global
+ * one, which has top-level variables plus those from the top level of modules. The second type is
+ * inside a function.
  *
- * <p>When a variable is declared so that it shadows an outer variable
- * those two get different slots, even though they have the same name.
+ * <p>When a variable is declared so that it shadows an outer variable those two get different
+ * slots, even though they have the same name.
  *
- * <p>The slot number combines two values in one: which stack frame
- * the variable resolves to, and its position in that frame. The first
- * bit says which frame, and the rest of the bits are left for the
- * slot number.
+ * <p>The slot number combines two values in one: which stack frame the variable resolves to, and
+ * its position in that frame. The first bit says which frame, and the rest of the bits are left for
+ * the slot number.
  *
  * <p>Basically:
+ *
  * <ul>
- *  <li>If first bit set: function frame
- *  <li>If first bit not set: global frame.
+ *   <li>If first bit set: function frame
+ *   <li>If first bit not set: global frame.
  * </ul>
  */
 public class ScopeManager {
@@ -75,8 +73,8 @@ public class ScopeManager {
   }
 
   /**
-   * Called when we enter a new function. A function is not just a new
-   * scope, because it needs its own stack frame.
+   * Called when we enter a new function. A function is not just a new scope, because it needs its
+   * own stack frame.
    */
   public void enterFunction() {
     functionFrame = new StackFrame();
@@ -93,12 +91,10 @@ public class ScopeManager {
   }
 
   /**
-   * Called when we enter a new lexical scope in which variables can
-   * be declared, hiding those declared further out. Although the
-   * scopes are nested we flatten them into a single stack frame by
-   * simply giving the variables different slots in the same frame.
-   * Variable 'v' may map to different slots depending on where in the
-   * code it is used.
+   * Called when we enter a new lexical scope in which variables can be declared, hiding those
+   * declared further out. Although the scopes are nested we flatten them into a single stack frame
+   * by simply giving the variables different slots in the same frame. Variable 'v' may map to
+   * different slots depending on where in the code it is used.
    */
   public void enterScope() {
     current.push(new ScopeFrame(functionScopes != null, currentFrame));
@@ -110,18 +106,14 @@ public class ScopeManager {
     current.pop();
   }
 
-  /**
-   * Registers a variable.
-   */
+  /** Registers a variable. */
   public VariableInfo registerVariable(LetExpression let) {
     LetInfo info = new LetInfo(let);
     current.peek().registerVariable(info);
     return info;
   }
 
-  /**
-   * Registers a parameter to a function.
-   */
+  /** Registers a parameter to a function. */
   public int registerParameter(String parameter, Location loc) {
     return current.peek().registerVariable(new ParameterInfo(parameter, loc));
   }
@@ -132,16 +124,14 @@ public class ScopeManager {
     // traversing the scopes from top to bottom
     for (ScopeFrame scope : current) {
       VariableInfo var = scope.resolveVariable(name);
-      if (var != null)
-        return var;
+      if (var != null) return var;
     }
 
     // might have to traverse global scope, too
     if (functionScopes != null) {
       for (ScopeFrame scope : scopes) {
         VariableInfo var = scope.resolveVariable(name);
-        if (var != null)
-          return var;
+        if (var != null) return var;
       }
     }
 
@@ -155,9 +145,8 @@ public class ScopeManager {
   }
 
   /**
-   * A scope frame is smaller than a stack frame: each object, object
-   * comprehension, for expression, and if expression will have its
-   * own scope frame. These need to be handled separately because of
+   * A scope frame is smaller than a stack frame: each object, object comprehension, for expression,
+   * and if expression will have its own scope frame. These need to be handled separately because of
    * the shadowing of variables.
    */
   private static class ScopeFrame {
@@ -176,8 +165,7 @@ public class ScopeManager {
 
       // see if we have a case of duplicate declaration
       if (variables.containsKey(name))
-        throw new JsltException("Duplicate variable declaration " +
-                                name, variable.getLocation());
+        throw new JsltException("Duplicate variable declaration " + name, variable.getLocation());
 
       // okay, register this variable
       int level = inFunction ? 0 : 0x10000000;

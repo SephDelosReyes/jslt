@@ -13,5 +13,6 @@ jetty-server = { group = "org.eclipse.jetty", name = "jetty-server", version.ref
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
-gradleup-shadow = { id = 'com.gradleup.shadow', version.ref = 'shadow'}
-intershop-gradle-javacc = {id = 'com.intershop.gradle.javacc', version.ref = 'javacc'}
+gradleup-shadow = { id = 'com.gradleup.shadow', version.ref = 'shadow' }
+intershop-gradle-javacc = {id = 'com.intershop.gradle.javacc', version.ref = 'javacc' }
+spotless = { id = 'com.diffplug.spotless', version = '6.25.0' }

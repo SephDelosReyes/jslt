@@ -1,31 +1,30 @@
-
 package no.priv.garshol.jslt.playground;
 
+import com.schibsted.spt.data.jslt.Expression;
+import com.schibsted.spt.data.jslt.Parser;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
-
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-import com.schibsted.spt.data.jslt.Parser;
-import com.schibsted.spt.data.jslt.Expression;
 
 public class PlaygroundServer {
   private static ObjectMapper mapper = new ObjectMapper();
   private static String INDEX_HTML = "lambda.html";
 
   public static class JsltHandler extends AbstractHandler {
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
-      if (!target.equals("/jslt"))
-        return;
+    public void handle(
+        String target,
+        Request baseRequest,
+        HttpServletRequest request,
+        HttpServletResponse response) {
+      if (!target.equals("/jslt")) return;
 
       if (request.getMethod().equals("GET")) {
         try (InputStream stream = Parser.class.getClassLoader().getResourceAsStream(INDEX_HTML)) {
@@ -55,7 +54,9 @@ public class PlaygroundServer {
           JsonNode output = template.apply(input);
           response.setStatus(HttpServletResponse.SC_OK);
 
-          response.getOutputStream().write(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(output));
+          response
+              .getOutputStream()
+              .write(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(output));
 
         } catch (Exception e) {
           try (PrintStream ps = new PrintStream(response.getOutputStream())) {
@@ -79,5 +80,4 @@ public class PlaygroundServer {
     server.start();
     server.join();
   }
-
 }

@@ -1,4 +1,3 @@
-
 // Copyright 2019 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +14,14 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.BooleanNode;
 
 /**
- * An optimized version of contains(a, b) which is used when b is an
- * array literal with a large number of values, so that a linear
- * search becomes a performance drag.
+ * An optimized version of contains(a, b) which is used when b is an array literal with a large
+ * number of values, so that a linear search becomes a performance drag.
  */
 public class OptimizedStaticContainsFunction extends AbstractFunction {
   private Set<JsonNode> values;
@@ -32,14 +30,11 @@ public class OptimizedStaticContainsFunction extends AbstractFunction {
     super("optimized-static-contains", 2, 2);
 
     this.values = new HashSet();
-    for (int ix = 0; ix < array.size(); ix++)
-      values.add(array.get(ix));
+    for (int ix = 0; ix < array.size(); ix++) values.add(array.get(ix));
   }
 
   public JsonNode call(JsonNode input, JsonNode[] arguments) {
-    if (values.contains(arguments[0]))
-      return BooleanNode.TRUE;
-    else
-      return BooleanNode.FALSE;
+    if (values.contains(arguments[0])) return BooleanNode.TRUE;
+    else return BooleanNode.FALSE;
   }
 }

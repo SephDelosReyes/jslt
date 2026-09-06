@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,7 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-/**
- * Class to encapsulate context information while the parse tree is being
- * prepared.
- */
+/** Class to encapsulate context information while the parse tree is being prepared. */
 public class PreparationContext {
   public ScopeManager scope;
 

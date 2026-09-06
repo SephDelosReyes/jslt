@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,70 +14,68 @@
 
 package com.schibsted.spt.data.jslt.impl;
 
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import com.schibsted.spt.data.jslt.Module;
 import com.schibsted.spt.data.jslt.Callable;
 import com.schibsted.spt.data.jslt.Function;
 import com.schibsted.spt.data.jslt.JsltException;
+import com.schibsted.spt.data.jslt.Module;
 import com.schibsted.spt.data.jslt.ResourceResolver;
-import com.schibsted.spt.data.jslt.filters.JsonFilter;
 import com.schibsted.spt.data.jslt.filters.DefaultJsonFilter;
+import com.schibsted.spt.data.jslt.filters.JsonFilter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Class to encapsulate context information like available functions,
- * parser/compiler settings, and so on, during parsing.
+ * Class to encapsulate context information like available functions, parser/compiler settings, and
+ * so on, during parsing.
  */
 public class ParseContext {
   private Collection<Function> extensions;
   private Map<String, Function> functions;
+
   /**
-   * What file/resource are we parsing? Can be null, in cases where we
-   * don't have this information.
+   * What file/resource are we parsing? Can be null, in cases where we don't have this information.
    */
   private String source;
+
   /**
-   * Imported modules listed under their prefixes. This is scoped per
-   * source file, since each has a different name-module mapping.
+   * Imported modules listed under their prefixes. This is scoped per source file, since each has a
+   * different name-module mapping.
    */
   private Map<String, Module> modules;
-  /**
-   * Tracks all loaded JSLT files. Shared between all contexts.
-   */
+
+  /** Tracks all loaded JSLT files. Shared between all contexts. */
   private List<JstlFile> files;
-  /**
-   * Function expressions, used for delayed name-to-function resolution.
-   */
+
+  /** Function expressions, used for delayed name-to-function resolution. */
   private Collection<FunctionExpression> funcalls;
+
   private ParseContext parent;
   private ResourceResolver resolver;
-  /**
-   * Named modules listed under their identifiers.
-   */
+
+  /** Named modules listed under their identifiers. */
   private Map<String, Module> namedModules;
-  /**
-   * Variable declaration and usage tracking.
-   */
+
+  /** Variable declaration and usage tracking. */
   private PreparationContext preparationContext;
-  /**
-   * Filter used to determine what object key/value pairs to keep.
-   */
+
+  /** Filter used to determine what object key/value pairs to keep. */
   private JsonFilter objectFilter;
 
-  public ParseContext(Collection<Function> extensions, String source,
-                      ResourceResolver resolver,
-                      Map<String, Module> namedModules,
-                      List<JstlFile> files,
-                      PreparationContext preparationContext,
-                      JsonFilter objectFilter) {
+  public ParseContext(
+      Collection<Function> extensions,
+      String source,
+      ResourceResolver resolver,
+      Map<String, Module> namedModules,
+      List<JstlFile> files,
+      PreparationContext preparationContext,
+      JsonFilter objectFilter) {
     this.extensions = extensions;
     this.functions = new HashMap();
-    for (Function func : extensions)
-      functions.put(func.getName(), func);
+    for (Function func : extensions) functions.put(func.getName(), func);
 
     this.source = source;
     this.files = files;
@@ -93,9 +90,14 @@ public class ParseContext {
   }
 
   public ParseContext(String source) {
-    this(Collections.EMPTY_SET, source, new ClasspathResourceResolver(),
-         new HashMap(), new ArrayList(), new PreparationContext(),
-         new DefaultJsonFilter());
+    this(
+        Collections.EMPTY_SET,
+        source,
+        new ClasspathResourceResolver(),
+        new HashMap(),
+        new ArrayList(),
+        new PreparationContext(),
+        new DefaultJsonFilter());
   }
 
   public void setParent(ParseContext parent) {
@@ -108,8 +110,7 @@ public class ParseContext {
 
   public Function getFunction(String name) {
     Function func = functions.get(name);
-    if (func == null)
-      func = BuiltinFunctions.functions.get(name);
+    if (func == null) func = BuiltinFunctions.functions.get(name);
     return func;
   }
 
@@ -138,9 +139,7 @@ public class ParseContext {
     for (FunctionExpression fun : funcalls) {
       String name = fun.getFunctionName();
       Function f = getFunction(name);
-      if (f == null)
-        throw new JsltException("No such function: '" + name + "'",
-                                fun.getLocation());
+      if (f == null) throw new JsltException("No such function: '" + name + "'", fun.getLocation());
       fun.resolve(f);
     }
   }
@@ -162,21 +161,18 @@ public class ParseContext {
   }
 
   public boolean isAlreadyImported(String module) {
-    if (source != null && module.equals(source))
-      return true;
-    if (parent != null)
-      return parent.isAlreadyImported(module);
+    if (source != null && module.equals(source)) return true;
+    if (parent != null) return parent.isAlreadyImported(module);
     return false;
   }
 
   public Callable getImportedCallable(String prefix, String name, Location loc) {
     Module m = modules.get(prefix);
-    if (m == null)
-      throw new JsltException("No such module '" + prefix + "'", loc);
+    if (m == null) throw new JsltException("No such module '" + prefix + "'", loc);
 
     Callable f = m.getCallable(name);
     if (f == null)
-      throw new JsltException("No such function '" + name+ "' in module '" + prefix + "'", loc);
+      throw new JsltException("No such function '" + name + "' in module '" + prefix + "'", loc);
 
     return f;
   }

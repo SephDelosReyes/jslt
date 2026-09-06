@@ -1,4 +1,3 @@
-
 // Copyright 2018 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +15,6 @@
 package com.schibsted.spt.data.jslt.impl;
 
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.node.IntNode;
-import tools.jackson.databind.node.NullNode;
-import tools.jackson.databind.node.BooleanNode;
-import com.schibsted.spt.data.jslt.Function;
-import com.schibsted.spt.data.jslt.JsltException;
 
 // not sure we actually need this ExpressionNode class. maybe macros
 // should be expressions in their own right? it does mean we get to
@@ -31,8 +24,7 @@ import com.schibsted.spt.data.jslt.JsltException;
 public class MacroExpression extends AbstractInvocationExpression {
   private Macro macro;
 
-  public MacroExpression(Macro macro, ExpressionNode[] arguments,
-                         Location location) {
+  public MacroExpression(Macro macro, ExpressionNode[] arguments, Location location) {
     super(arguments, location);
     resolve(macro);
     this.macro = macro;

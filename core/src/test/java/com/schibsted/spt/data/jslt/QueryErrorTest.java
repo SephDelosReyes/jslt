@@ -1,29 +1,19 @@
-
 package com.schibsted.spt.data.jslt;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Collection;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.NullNode;
+import tools.jackson.databind.ObjectMapper;
 
-/**
- * Checks that JSLT queries produce certain runtime errors.
- */
+/** Checks that JSLT queries produce certain runtime errors. */
 @RunWith(Parameterized.class)
 public class QueryErrorTest extends TestBase {
 
@@ -47,9 +37,9 @@ public class QueryErrorTest extends TestBase {
       JsonNode actual = expr.apply(context);
       fail("JSLT did not detect error in " + query);
     } catch (JsltException e) {
-      assertTrue("incorrect error message: '" + e.getMessage() + "', " +
-                 "correct: '" + error + "'",
-                 e.getMessage().indexOf(error) != -1);
+      assertTrue(
+          "incorrect error message: '" + e.getMessage() + "', " + "correct: '" + error + "'",
+          e.getMessage().indexOf(error) != -1);
     } catch (Exception e) {
       throw new RuntimeException("Failure on query " + query + ": " + e, e);
     }
@@ -76,11 +66,12 @@ public class QueryErrorTest extends TestBase {
         // this works because we load the same file in QueryTest
         continue;
 
-      strings.add(new Object[] {
-          TestUtils.toJsonString(test.get("input")),
-          TestUtils.toJsonString(test.get("query")),
-          TestUtils.toJsonString(test.get("error"))
-        });
+      strings.add(
+          new Object[] {
+            TestUtils.toJsonString(test.get("input")),
+            TestUtils.toJsonString(test.get("query")),
+            TestUtils.toJsonString(test.get("error"))
+          });
     }
     return strings;
   }

@@ -1,4 +1,3 @@
-
 // Copyright 2019 Schibsted Marketplaces Products & Technology As
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +14,11 @@
 
 package com.schibsted.spt.data.jslt.filters;
 
-import tools.jackson.databind.JsonNode;
 import com.schibsted.spt.data.jslt.Expression;
 import com.schibsted.spt.data.jslt.impl.NodeUtils;
+import tools.jackson.databind.JsonNode;
 
-/**
- * Used for object filtering with JSLT expressions.
- */
+/** Used for object filtering with JSLT expressions. */
 public class JsltJsonFilter implements JsonFilter {
   private Expression jslt;
 
@@ -29,11 +26,8 @@ public class JsltJsonFilter implements JsonFilter {
     this.jslt = jslt;
   }
 
-  /**
-   * Whether or not to accept this value.
-   */
+  /** Whether or not to accept this value. */
   public boolean filter(JsonNode value) {
     return NodeUtils.isTrue(jslt.apply(value));
   }
-
 }
